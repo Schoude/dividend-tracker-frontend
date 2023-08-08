@@ -3,13 +3,13 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "astro": "astro",
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs"
   },
   "dependencies": {
+    "@astrojs/deno": "^4.3.0",
     "astro": "^2.10.3"
   }
 }
