@@ -1,0 +1,204 @@
+---
+import { formatCurrency } from "../../../intl";
+import Layout from "../../../layouts/Layout.astro";
+import { months } from "../../../date";
+import { getPercentage } from "../../../calculation";
+
+// TODO: move all this stuff into helper fn
+interface Dividend {
+  isin: string;
+  payment_date_iso: string;
+  payment_date_unix: number;
+  ex_date_iso: string;
+  amount: number;
+}
+
+interface Stock {
+  dividends_stock: Dividend[];
+}
+
+interface StatusStock {
+  name: string;
+  isin: string;
+  totalAmount: number;
+}
+
+type StatusFund = StatusStock;
+
+type StocksStatus = StatusStock[];
+
+interface Fund {
+  dividends_fund: Dividend[];
+}
+
+type FundsStatus = StatusFund[];
+
+interface DividendOfMonth {
+  amountPayout: number;
+  info: StatusStock | undefined;
+  isin: string;
+  payment_date_iso: string;
+  payment_date_unix: number;
+  ex_date_iso: string;
+  amount: number;
+}
+
+type DividendsMonthly = DividendOfMonth[];
+
+const { id } = Astro.params;
+
+const {
+  data: { name, stocks, funds, stocksStatus, fundsStatus },
+} = (await (
+  await fetch(`http://127.0.0.1:8000/api/portfolio/${id}/detail`)
+).json()) as {
+  data: {
+    name: string;
+    stocks: Stock[];
+    funds: Fund[];
+    stocksStatus: StocksStatus;
+    fundsStatus: FundsStatus;
+  };
+};
+
+const dividendTimeline = [];
+const today = new Date();
+const year = today.getUTCFullYear();
+const currentMonth = today.getMonth() + 1;
+
+for (let i = currentMonth; i <= 12; i++) {
+  const timelineMonth: {
+    year: number;
+    month: number;
+    dividendsOfMonth: DividendsMonthly;
+    totalPayout: number;
+  } = {
+    year,
+    month: i,
+    dividendsOfMonth: [],
+    totalPayout: 0,
+  };
+
+  const dividendsOfMonth = stocks
+    .map((s) => {
+      return s.dividends_stock
+        .filter((d) => {
+          return d.payment_date_iso.includes(
+            `${year}-${i.toString().padStart(2, "0")}`
+          );
+        })
+        .map((d) => {
+          const stockInfo = stocksStatus.find(
+            (status) => status.isin === d.isin
+          );
+
+          return {
+            ...d,
+            amountPayout: d.amount * stockInfo?.totalAmount! * 0.85 * 0.91,
+            info: stockInfo,
+          };
+        });
+    })
+    .flat();
+
+  const fundDividends =
+    funds
+      .map((s) => {
+        return s.dividends_fund
+          .filter((d) => {
+            return d.payment_date_iso.includes(
+              `${year}-${i.toString().padStart(2, "0")}`
+            );
+          })
+          .map((d) => {
+            const fundInfo = fundsStatus.find(
+              (status) => status.isin === d.isin
+            );
+
+            return {
+              ...d,
+              amountPayout: d.amount * fundInfo?.totalAmount! * 0.85 * 0.91,
+              info: fundInfo,
+            };
+          });
+      })
+      .flat() ?? [];
+
+  dividendsOfMonth.push(...fundDividends);
+
+  timelineMonth.dividendsOfMonth = dividendsOfMonth.sort(
+    (a, b) => a.payment_date_unix - b.payment_date_unix
+  );
+
+  timelineMonth.totalPayout = timelineMonth.dividendsOfMonth.reduce(
+    (acc, value) => {
+      acc += value.amountPayout;
+
+      return acc;
+    },
+    0
+  );
+
+  dividendTimeline.push(timelineMonth);
+}
+---
+
+<Layout title={`Dividenden-Übersicht: ${name}`}>
+  <main>
+    <h1>Portfolio "{name}"</h1>
+    <section>
+      {
+        dividendTimeline.map((month) => (
+          <article>
+            <h2>
+              {months.get(month.month)}&nbsp;{month.year}
+            </h2>
+            <h3>Dividende: {formatCurrency(month.totalPayout)}</h3>
+            <div class="stocks">
+              {month.dividendsOfMonth.map((stock) => (
+                <div class="stock">
+                  <p>
+                    <b>{stock.info?.name}</b>
+                  </p>
+                  <p>
+                    Betrag: {formatCurrency(stock.amountPayout)}&nbsp;
+                    {`(${getPercentage(
+                      stock.amountPayout,
+                      month.totalPayout
+                    )})`}
+                  </p>
+                  <p>
+                    Datum Auszahlung:
+                    {new Date(stock.payment_date_iso).toLocaleDateString()}
+                  </p>
+                  <p>
+                    Datum Ex-Dividende:
+                    {new Date(stock.ex_date_iso).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .stocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .stock {
+    flex-basis: 320px;
+    border: 1px solid white;
+    padding: 0 0.75rem;
+
+    & p:first-child {
+      font-size: 1.2rem;
+    }
+  }
+</style>
