@@ -1,0 +1,16 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const { userId } = Astro.params;
+
+const { data } = (await (
+  await fetch(`http://127.0.0.1:8000/api/portfolios/${userId}`)
+).json()) as { data: { id: number; name: string }[] };
+---
+
+<Layout title="Deine Portfolios">
+  <main>
+    <h1>Deine Portfolios</h1>
+    {data.map((p) => <a href={`/portfolio/${p.id}/detail`}>{p.name}</a>)}
+  </main>
+</Layout>

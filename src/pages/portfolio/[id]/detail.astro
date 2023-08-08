@@ -1,0 +1,26 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { getValueOfPortfolio } from "../../../calculation";
+
+const { id } = Astro.params;
+
+const { data } = await (
+  await fetch(`http://127.0.0.1:8000/api/portfolio/${id}/detail`)
+).json();
+
+const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
+  data.stocksStatus,
+  data.fundsStatus
+);
+---
+
+<Layout title={`Portfolio Detail: ${data.name}`}>
+  <main>
+    <h1>Portfolio "{data.name}"</h1>
+    <section>
+      <h2>Gesamtwert: {totalValue}</h2>
+      <h3>Wert Aktien: {totalStocksValue}</h3>
+      <h3>Wert ETFs: {totalFundsValue}</h3>
+    </section>
+  </main>
+</Layout>
