@@ -1,19 +1,36 @@
 ---
-import { formatCurrency } from "../../../intl";
+import { formatCurrency } from "../../../utils/intl";
 import Layout from "../../../layouts/Layout.astro";
-import { months } from "../../../date";
-import { getPercentage } from "../../../calculation";
+import { months } from "../../../utils/date";
+import { getPercentage } from "../../../utils/calculation";
 
 // TODO: move all this stuff into helper fn
+interface Order {
+  amount_changed: number;
+  id: number;
+  instrument_type: string;
+  isin: string;
+  name: string;
+  order_id: string;
+  price: number;
+  timestamp: number;
+  type: string;
+}
+
+type Orders = Order[];
+
 interface Dividend {
   isin: string;
   payment_date_iso: string;
   payment_date_unix: number;
   ex_date_iso: string;
+  ex_date_unix: number;
   amount: number;
+  info: string;
 }
 
 interface Stock {
+  isin: string;
   dividends_stock: Dividend[];
 }
 
@@ -28,6 +45,7 @@ type StatusFund = StatusStock;
 type StocksStatus = StatusStock[];
 
 interface Fund {
+  isin: string;
   dividends_fund: Dividend[];
 }
 
@@ -35,20 +53,25 @@ type FundsStatus = StatusFund[];
 
 interface DividendOfMonth {
   amountPayout: number;
-  info: StatusStock | undefined;
+  info: string;
+  instrumentInfo: StatusStock | undefined;
   isin: string;
   payment_date_iso: string;
   payment_date_unix: number;
   ex_date_iso: string;
   amount: number;
+  ownedAtPayout: number;
 }
 
 type DividendsMonthly = DividendOfMonth[];
 
 const { id } = Astro.params;
 
+const SOURCE_TAX = 0.85;
+const EXCHANGE_RATE = 0.91;
+
 const {
-  data: { name, stocks, funds, stocksStatus, fundsStatus },
+  data: { name, stocks, funds, stocksStatus, fundsStatus, orders },
 } = (await (
   await fetch(`http://127.0.0.1:8000/api/portfolio/${id}/detail`)
 ).json()) as {
@@ -58,6 +81,7 @@ const {
     funds: Fund[];
     stocksStatus: StocksStatus;
     fundsStatus: FundsStatus;
+    orders: Orders;
   };
 };
 
@@ -88,14 +112,24 @@ for (let i = currentMonth; i <= 12; i++) {
           );
         })
         .map((d) => {
+          const validOrdersOfStock = orders
+            .filter((order) => order.isin === s.isin)
+            .filter((order) => order.timestamp < d.ex_date_unix);
+
+          const ownedAtPayout = validOrdersOfStock.reduce((acc, order) => {
+            acc += order.amount_changed;
+            return acc;
+          }, 0);
+
           const stockInfo = stocksStatus.find(
             (status) => status.isin === d.isin
           );
 
           return {
             ...d,
-            amountPayout: d.amount * stockInfo?.totalAmount! * 0.85 * 0.91,
-            info: stockInfo,
+            amountPayout: d.amount * ownedAtPayout * SOURCE_TAX * EXCHANGE_RATE,
+            instrumentInfo: stockInfo,
+            ownedAtPayout,
           };
         });
     })
@@ -103,22 +137,43 @@ for (let i = currentMonth; i <= 12; i++) {
 
   const fundDividends =
     funds
-      .map((s) => {
-        return s.dividends_fund
+      .map((f) => {
+        return f.dividends_fund
           .filter((d) => {
             return d.payment_date_iso.includes(
               `${year}-${i.toString().padStart(2, "0")}`
             );
           })
           .map((d) => {
+            const validOrdersOfFund = orders
+              .filter((order) => order.isin === f.isin)
+              .filter((order) => {
+                if (order.timestamp > d.ex_date_unix) {
+                  console.log(
+                    "possibly exclude order: ",
+                    order,
+                    new Date(order.timestamp).toLocaleDateString()
+                  );
+                  console.log("ex date: ", d.ex_date_iso);
+                }
+
+                return order.timestamp < d.ex_date_unix;
+              });
+
+            const ownedAtPayout = validOrdersOfFund.reduce((acc, order) => {
+              acc += order.amount_changed;
+              return acc;
+            }, 0);
+
             const fundInfo = fundsStatus.find(
               (status) => status.isin === d.isin
             );
 
             return {
               ...d,
-              amountPayout: d.amount * fundInfo?.totalAmount! * 0.85 * 0.91,
-              info: fundInfo,
+              amountPayout: d.amount * ownedAtPayout,
+              instrumentInfo: fundInfo,
+              ownedAtPayout,
             };
           });
       })
@@ -151,30 +206,50 @@ for (let i = currentMonth; i <= 12; i++) {
         dividendTimeline.map((month) => (
           <article>
             <h2>
-              {months.get(month.month)}&nbsp;{month.year}
+              {months.get(month.month)} {month.year}
             </h2>
-            <h3>Dividende: {formatCurrency(month.totalPayout)}</h3>
+            <h3>
+              Erwartete Dividende:
+              <span style="font-weight: 500;">
+                {formatCurrency(month.totalPayout, "EUR", "de-DE")}
+              </span>
+            </h3>
             <div class="stocks">
-              {month.dividendsOfMonth.map((stock) => (
+              {month.dividendsOfMonth.map((dividend) => (
                 <div class="stock">
+                  <h3 style="text-align: center;">
+                    {dividend.instrumentInfo?.name}
+                  </h3>
                   <p>
-                    <b>{stock.info?.name}</b>
+                    <span style="font-size: 1.25rem; font-weight: 500;">
+                      {formatCurrency(dividend.amountPayout, "EUR", "de-DE")}
+                    </span>
+                    <small>
+                      {`(${getPercentage(
+                        dividend.amountPayout,
+                        month.totalPayout
+                      )})`}
+                    </small>
                   </p>
-                  <p>
-                    Betrag: {formatCurrency(stock.amountPayout)}&nbsp;
-                    {`(${getPercentage(
-                      stock.amountPayout,
-                      month.totalPayout
-                    )})`}
-                  </p>
-                  <p>
-                    Datum Auszahlung:
-                    {new Date(stock.payment_date_iso).toLocaleDateString()}
-                  </p>
-                  <p>
-                    Datum Ex-Dividende:
-                    {new Date(stock.ex_date_iso).toLocaleDateString()}
-                  </p>
+                  <div class="dividend-info">
+                    <p>pro Aktie: {formatCurrency(dividend.amount)}</p>
+                    <p>Betand: {dividend.ownedAtPayout.toFixed(2)}</p>
+                    <p>
+                      Auszahlung am:
+                      <br />
+                      {new Date(dividend.payment_date_iso).toLocaleDateString()}
+                    </p>
+                    <p>
+                      Ex-Dividende am:
+                      <br />
+                      {new Date(dividend.ex_date_iso).toLocaleDateString()}
+                    </p>
+                    {dividend.info ? (
+                      <p>
+                        Info: <i>{dividend.info}</i>{" "}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
               ))}
             </div>
@@ -193,12 +268,22 @@ for (let i = currentMonth; i <= 12; i++) {
   }
 
   .stock {
-    flex-basis: 320px;
-    border: 1px solid white;
-    padding: 0 0.75rem;
+    flex-basis: 420px;
+    border: 1px solid rgb(53, 53, 53);
+    padding: 0.98rem 1.27rem;
+    background-color: hsl(0, 0%, 4%);
+    border-radius: 4px;
+    transition: background-color 260ms ease-out, box-shadow 260ms ease-out;
 
-    & p:first-child {
-      font-size: 1.2rem;
+    &:hover {
+      background-color: hsl(0, 0%, 5%);
+      box-shadow: 0 10px 12px -8px hsl(0, 0%, 4%);
     }
+  }
+
+  .dividend-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
   }
 </style>

@@ -1,10 +1,11 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import { getValueOfPortfolio } from "../../../calculation";
+import { getValueOfPortfolio } from "../../../utils/calculation";
 
 const { id } = Astro.params;
 
 const { data } = await (
+  // TODO: get url from .env
   await fetch(`http://127.0.0.1:8000/api/portfolio/${id}/detail`)
 ).json();
 
