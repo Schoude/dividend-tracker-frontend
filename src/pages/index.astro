@@ -1,14 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-
-try {
-  const res = await fetch("http://127.0.0.1:8000/api/portfolios/1");
-  const portfolios = await res.json();
-
-  console.log(portfolios);
-} catch (error) {
-  console.log((error as Error).message);
-}
 ---
 
 <Layout title="Dividend Tracker">

@@ -5,8 +5,7 @@ import { getValueOfPortfolio } from "../../../utils/calculation";
 const { id } = Astro.params;
 
 const { data } = await (
-  // TODO: get url from .env
-  await fetch(`http://127.0.0.1:8000/api/portfolio/${id}/detail`)
+  await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolio/${id}/detail`)
 ).json();
 
 const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(

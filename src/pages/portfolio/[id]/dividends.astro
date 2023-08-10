@@ -3,67 +3,14 @@ import { formatCurrency } from "../../../utils/intl";
 import Layout from "../../../layouts/Layout.astro";
 import { months } from "../../../utils/date";
 import { getPercentage } from "../../../utils/calculation";
-
-// TODO: move all this stuff into helper fn
-interface Order {
-  amount_changed: number;
-  id: number;
-  instrument_type: string;
-  isin: string;
-  name: string;
-  order_id: string;
-  price: number;
-  timestamp: number;
-  type: string;
-}
-
-type Orders = Order[];
-
-interface Dividend {
-  isin: string;
-  payment_date_iso: string;
-  payment_date_unix: number;
-  ex_date_iso: string;
-  ex_date_unix: number;
-  amount: number;
-  info: string;
-}
-
-interface Stock {
-  isin: string;
-  dividends_stock: Dividend[];
-}
-
-interface StatusStock {
-  name: string;
-  isin: string;
-  totalAmount: number;
-}
-
-type StatusFund = StatusStock;
-
-type StocksStatus = StatusStock[];
-
-interface Fund {
-  isin: string;
-  dividends_fund: Dividend[];
-}
-
-type FundsStatus = StatusFund[];
-
-interface DividendOfMonth {
-  amountPayout: number;
-  info: string;
-  instrumentInfo: StatusStock | undefined;
-  isin: string;
-  payment_date_iso: string;
-  payment_date_unix: number;
-  ex_date_iso: string;
-  amount: number;
-  ownedAtPayout: number;
-}
-
-type DividendsMonthly = DividendOfMonth[];
+import type {
+  Stock,
+  StocksStatus,
+  FundsStatus,
+  Orders,
+  DividendsMonthly,
+  Fund,
+} from "../../../types";
 
 const { id } = Astro.params;
 
@@ -73,7 +20,7 @@ const EXCHANGE_RATE = 0.91;
 const {
   data: { name, stocks, funds, stocksStatus, fundsStatus, orders },
 } = (await (
-  await fetch(`http://127.0.0.1:8000/api/portfolio/${id}/detail`)
+  await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolio/${id}/detail`)
 ).json()) as {
   data: {
     name: string;

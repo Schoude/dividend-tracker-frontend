@@ -4,7 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 const { userId } = Astro.params;
 
 const { data } = (await (
-  await fetch(`http://127.0.0.1:8000/api/portfolios/${userId}`)
+  await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolios/${userId}`)
 ).json()) as { data: { id: number; name: string }[] };
 ---
 
