@@ -12,3 +12,12 @@ export const months = new Map([
   [11, 'November'],
   [12, 'Dezember']
 ]);
+
+export function isInPast(unixDate: number) {
+  const today = new Date();
+  today.setHours(0);
+  today.setMinutes(0);
+  today.setSeconds(0);
+
+  return unixDate < today.getTime();
+}

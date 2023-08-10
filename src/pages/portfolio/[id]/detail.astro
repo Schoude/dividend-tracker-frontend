@@ -1,6 +1,5 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import type { Fund } from "../../../types";
 import type { PortfolioDetailResponse } from "../../../types";
 import { getValueOfPortfolio } from "../../../utils/calculation";
 import { formatCurrency } from "../../../utils/intl";
@@ -62,14 +61,18 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                       <div
                         class="details"
                         class:list={
-                          Number(stock.percentChange) < 0 ? "loss" : "gain"
+                          Number(stock.percentChange) < 0
+                            ? "loss"
+                            : Number(stock.percentChange) > 0
+                              ? "gain"
+                              : ''
                         }
                       >
                         <p>
-                          {formatCurrency(stock.currentPrice)}
+                          {formatCurrency(stock.currentPrice, 'EUR', 'de-DE')}
                           {stock.percentChange}%
                         </p>
-                        <p>{formatCurrency(stock.currentValue)}</p>
+                        <p>{formatCurrency(stock.currentValue, 'EUR', 'de-DE')}</p>
                       </div>
                     </div>
                   </li>
@@ -110,10 +113,10 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                         }
                       >
                       <p>
-                          {formatCurrency(fund.currentPrice)}
+                          {formatCurrency(fund.currentPrice, 'EUR', 'de-DE')}
                           {fund.percentChange}%
                         </p>
-                        <p>{formatCurrency(fund.currentValue)}</p>
+                        <p>{formatCurrency(fund.currentValue, 'EUR', 'de-DE')}</p>
                       </div>
                     </div>
                   </li>
@@ -144,7 +147,13 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
   .investments {
     .grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
+      gap: 5rem;
+
+      @media screen and (min-width: 768px) {
+        gap: initial;
+        grid-template-columns: 1fr 1fr;
+      }
     }
   }
 

@@ -84,6 +84,7 @@ export type DividendsMonthly = DividendOfMonth[];
 
 export interface PortfolioDetailResponse {
   data: {
+    id: number;
     name: string;
     stocks: Stock[];
     funds: Fund[];
