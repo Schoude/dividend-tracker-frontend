@@ -65,8 +65,11 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                           Number(stock.percentChange) < 0 ? "loss" : "gain"
                         }
                       >
-                        {formatCurrency(stock.currentPrice)}{" "}
-                        {stock.percentChange}%
+                        <p>
+                          {formatCurrency(stock.currentPrice)}
+                          {stock.percentChange}%
+                        </p>
+                        <p>{formatCurrency(stock.currentValue)}</p>
                       </div>
                     </div>
                   </li>
@@ -106,8 +109,11 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                           Number(fund.percentChange) < 0 ? "loss" : "gain"
                         }
                       >
-                        {formatCurrency(fund.currentPrice)} {fund.percentChange}
-                        %
+                      <p>
+                          {formatCurrency(fund.currentPrice)}
+                          {fund.percentChange}%
+                        </p>
+                        <p>{formatCurrency(fund.currentValue)}</p>
                       </div>
                     </div>
                   </li>
