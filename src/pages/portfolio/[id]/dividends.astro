@@ -3,14 +3,7 @@ import { formatCurrency } from "../../../utils/intl";
 import Layout from "../../../layouts/Layout.astro";
 import { months } from "../../../utils/date";
 import { getPercentage } from "../../../utils/calculation";
-import type {
-  Stock,
-  StocksStatus,
-  FundsStatus,
-  Orders,
-  DividendsMonthly,
-  Fund,
-} from "../../../types";
+import type { DividendsMonthly, PortfolioDetailResponse } from "../../../types";
 
 const { id } = Astro.params;
 
@@ -21,16 +14,7 @@ const {
   data: { name, stocks, funds, stocksStatus, fundsStatus, orders },
 } = (await (
   await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolio/${id}/detail`)
-).json()) as {
-  data: {
-    name: string;
-    stocks: Stock[];
-    funds: Fund[];
-    stocksStatus: StocksStatus;
-    fundsStatus: FundsStatus;
-    orders: Orders;
-  };
-};
+).json()) as PortfolioDetailResponse;
 
 const dividendTimeline = [];
 const today = new Date();

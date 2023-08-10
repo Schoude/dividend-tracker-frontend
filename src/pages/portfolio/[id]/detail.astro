@@ -1,12 +1,13 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
+import type { PortfolioDetailResponse } from "../../../types";
 import { getValueOfPortfolio } from "../../../utils/calculation";
 
 const { id } = Astro.params;
 
-const { data } = await (
+const { data } = (await (
   await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolio/${id}/detail`)
-).json();
+).json()) as PortfolioDetailResponse;
 
 const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
   data.stocksStatus,
@@ -19,9 +20,19 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
     <h1>Portfolio "{data.name}"</h1>
     <section>
       <h2>Gesamtwert: {totalValue}</h2>
-      <h3>Wert Aktien: {totalStocksValue}</h3>
-      <h3>Wert ETFs: {totalFundsValue}</h3>
+      <div class="amounts">
+        <h3>Aktien: {totalStocksValue}</h3>
+        <h3>ETFs: {totalFundsValue}</h3>
+      </div>
     </section>
     <a href={`/portfolio/${id}/dividends`}>Zur Dividenden-Übersicht</a>
+    <div class="stocks-overview"></div>
   </main>
 </Layout>
+
+<style>
+  .amounts {
+    display: flex;
+    gap: 1rem;
+  }
+</style>

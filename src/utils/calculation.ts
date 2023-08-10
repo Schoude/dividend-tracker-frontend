@@ -1,8 +1,9 @@
+import type { FundsStatus, StocksStatus } from '../types';
 import { formatCurrency } from './intl';
 
 export function getValueOfPortfolio(
-  stocksStatus: { currentValue: number }[],
-  fundsStatus: { currentValue: number }[]
+  stocksStatus: StocksStatus,
+  fundsStatus: FundsStatus
 ) {
   const totalStocksValue = stocksStatus.reduce((acc, stock) => {
     acc += stock.currentValue;

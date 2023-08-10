@@ -31,6 +31,7 @@ export interface StatusStock {
   name: string;
   isin: string;
   totalAmount: number;
+  currentValue: number;
 }
 
 type StatusFund = StatusStock;
@@ -57,3 +58,14 @@ interface DividendOfMonth {
 }
 
 export type DividendsMonthly = DividendOfMonth[];
+
+export interface PortfolioDetailResponse {
+  data: {
+    name: string;
+    stocks: Stock[];
+    funds: Fund[];
+    stocksStatus: StocksStatus;
+    fundsStatus: FundsStatus;
+    orders: Orders;
+  }
+}
