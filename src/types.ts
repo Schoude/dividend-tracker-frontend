@@ -23,7 +23,16 @@ interface Dividend {
 }
 
 export interface Stock {
-  isin: string;
+  company_name: string | null;
+  distribution_frequency: string | null;
+  exchange_id: string | null;
+  id: number;
+  image_id: string | null;
+  intl_symbol: string | null;
+  ipo_date: number | null;
+  isin: string | null;
+  price_snapshot: number | null;
+  type_id: string | null;
   dividends_stock: Dividend[];
 }
 
@@ -31,7 +40,12 @@ export interface StatusStock {
   name: string;
   isin: string;
   totalAmount: number;
+  averagePrice: number;
+  currentPrice: number;
+  averageValue: number;
   currentValue: number;
+  percentChange: number;
+  valueChange: number;
 }
 
 type StatusFund = StatusStock;
@@ -39,7 +53,16 @@ type StatusFund = StatusStock;
 export type StocksStatus = StatusStock[];
 
 export interface Fund {
+  description: string;
+  distribution_frequency: string;
+  exchange_id: string;
+  focus: string;
+  fund_name: string;
+  id: number;
+  image_id: string;
   isin: string;
+  price_snapshot: number;
+  type_id: string;
   dividends_fund: Dividend[];
 }
 

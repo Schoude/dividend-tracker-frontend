@@ -27,6 +27,11 @@ const { title } = Astro.props;
   </body>
 </html>
 <style is:global>
+  * {
+    font-weight: 300;
+    box-sizing: border-box;
+  }
+
   html {
     font-family: "Kanit", sans-serif;
   }
@@ -38,7 +43,11 @@ const { title } = Astro.props;
   h5,
   h6,
   p {
-    font-weight: 300;
     margin: 0;
+  }
+
+  :any-link {
+    color: initial;
+    text-decoration: none;
   }
 </style>

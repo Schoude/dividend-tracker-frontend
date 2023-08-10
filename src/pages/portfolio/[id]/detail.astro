@@ -1,7 +1,10 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
+import type { Fund } from "../../../types";
 import type { PortfolioDetailResponse } from "../../../types";
 import { getValueOfPortfolio } from "../../../utils/calculation";
+import { formatCurrency } from "../../../utils/intl";
+import { getLogoUrl } from "../../../utils/logos";
 
 const { id } = Astro.params;
 
@@ -25,8 +28,95 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
         <h3>ETFs: {totalFundsValue}</h3>
       </div>
     </section>
-    <a href={`/portfolio/${id}/dividends`}>Zur Dividenden-Übersicht</a>
-    <div class="stocks-overview"></div>
+    <a class="link-overview-dividends" href={`/portfolio/${id}/dividends`}
+      >Zur Dividenden-Übersicht</a
+    >
+    <section class="investments">
+      <h2 class="title-investments">Investments:</h2>
+
+      <div class="grid">
+        <div class="investments-stocks">
+          <ul>
+            {
+              data.stocksStatus
+                .sort((a, b) => b.currentValue - a.currentValue)
+                .map((stock) => (
+                  <li>
+                    <div class="investment">
+                        <a
+                          class="investment-name"
+                          href={`/stock/${stock.isin}/detail`}
+                        >
+                          <img
+                            src={getLogoUrl(
+                              data.stocks.find(
+                                (iterStock) => iterStock.isin === stock.isin
+                              )!
+                            )}
+                            alt={`Logo ${stock.name}`}
+                            width="40"
+                            height="40"
+                          />
+                          {stock.name}
+                        </a>
+                      <div
+                        class="details"
+                        class:list={
+                          Number(stock.percentChange) < 0 ? "loss" : "gain"
+                        }
+                      >
+                        {formatCurrency(stock.currentPrice)}{" "}
+                        {stock.percentChange}%
+                      </div>
+                    </div>
+                  </li>
+                ))
+            }
+          </ul>
+        </div>
+        <div class="investments-funds">
+          <ul>
+            {
+              data.fundsStatus
+                .sort((a, b) => b.currentValue - a.currentValue)
+                .map((fund) => (
+                  <li>
+                    <div class="investment">
+                      <p class="investment-name">
+                        <a
+                          class="investment-name"
+                          href={`/fund/${fund.isin}/detail`}
+                        >
+                          <img
+                            src={getLogoUrl(
+                              data.funds.find(
+                                (iterFund) => iterFund.isin === fund.isin
+                              )!
+                            )}
+                            alt={`Logo ${fund.name}`}
+                            width="40"
+                            height="40"
+                            height="40"
+                          />
+                          {fund.name}
+                        </a>
+                      <div
+                        class="details"
+                        class:list={
+                          Number(fund.percentChange) < 0 ? "loss" : "gain"
+                        }
+                      >
+                        {formatCurrency(fund.currentPrice)} {fund.percentChange}
+                        %
+                      </div>
+                    </div>
+                  </li>
+                ))
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
   </main>
 </Layout>
 
@@ -34,5 +124,52 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
   .amounts {
     display: flex;
     gap: 1rem;
+  }
+
+  .link-overview-dividends {
+    margin-block: 1rem;
+    display: inline-block;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .investments {
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .title-investments {
+    margin-bottom: 0.5rem;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li + li {
+    margin-block-start: 0.75rem;
+  }
+
+  .investment-name {
+    font-size: 1.2rem;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .details {
+    &.gain {
+      color: green;
+    }
+    &.loss {
+      color: red;
+    }
   }
 </style>
