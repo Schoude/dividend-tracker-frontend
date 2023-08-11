@@ -42,22 +42,22 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                 .map((stock) => (
                   <li>
                     <div class="investment">
-                        <a
-                          class="investment-name"
-                          href={`/stock/${stock.isin}/detail`}
-                        >
-                          <img
-                            src={getLogoUrl(
-                              data.stocks.find(
-                                (iterStock) => iterStock.isin === stock.isin
-                              )!
-                            )}
-                            alt={`Logo ${stock.name}`}
-                            width="40"
-                            height="40"
-                          />
-                          {stock.name}
-                        </a>
+                      <a
+                        class="investment-name"
+                        href={`/portfolio/${id}/order/${stock.isin}`}
+                      >
+                        <img
+                          src={getLogoUrl(
+                            data.stocks.find(
+                              (iterStock) => iterStock.isin === stock.isin
+                            )!
+                          )}
+                          alt={`Logo ${stock.name}`}
+                          width="40"
+                          height="40"
+                        />
+                        {stock.name}
+                      </a>
                       <div
                         class="details"
                         class:list={
@@ -91,7 +91,7 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                       <p class="investment-name">
                         <a
                           class="investment-name"
-                          href={`/fund/${fund.isin}/detail`}
+                          href={`/portfolio/${id}/order/${fund.isin}`}
                         >
                           <img
                             src={getLogoUrl(

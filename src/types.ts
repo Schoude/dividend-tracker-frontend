@@ -22,18 +22,21 @@ interface Dividend {
   info: string;
 }
 
-export interface Stock {
-  company_name: string | null;
-  distribution_frequency: string | null;
-  exchange_id: string | null;
-  id: number;
-  image_id: string | null;
-  intl_symbol: string | null;
-  ipo_date: number | null;
-  isin: string | null;
-  price_snapshot: number | null;
-  type_id: string | null;
+export interface StockFullInfo {
+  isin: string;
+  intl_symbol: string;
+  name: string;
+  price_snapshot: number;
+  ipo_date: number;
+  type_id: InstrumentType;
+  exchange_id: string;
+  image_id: string;
+  distribution_frequency: string;
+  company_events: CompanyEvent[];
   dividends_stock: Dividend[];
+  company_infos: CompanyInfos;
+  analyst_ratings: AnalystRatings;
+  sectors: Sector[];
 }
 
 export interface StatusStock {
@@ -53,6 +56,7 @@ type StatusFund = StatusStock;
 export type StocksStatus = StatusStock[];
 
 export interface Fund {
+  name: string;
   description: string;
   distribution_frequency: string;
   exchange_id: string;
@@ -62,7 +66,7 @@ export interface Fund {
   image_id: string;
   isin: string;
   price_snapshot: number;
-  type_id: string;
+  type_id: InstrumentType;
   dividends_fund: Dividend[];
 }
 
@@ -86,10 +90,51 @@ export interface PortfolioDetailResponse {
   data: {
     id: number;
     name: string;
-    stocks: Stock[];
+    stocks: StockFullInfo[];
     funds: Fund[];
     stocksStatus: StocksStatus;
     fundsStatus: FundsStatus;
     orders: Orders;
   }
 }
+
+export interface AnalystRatings {
+  target_price_high: number;
+  target_price_average: number;
+  target_price_low: number;
+  recommendations_buy: number;
+  recommendations_outperform: number;
+  recommendations_hold: number;
+  recommendations_underperform: number;
+}
+
+export interface CompanyEvent {
+  title: string;
+  description: string;
+  timestamp: number;
+}
+
+export interface CompanyInfos {
+  isin: string;
+  name: string;
+  description: string;
+  yearfounded: number;
+  peratiosnapshot: null;
+  pbratiosnapshot: number;
+  dividendyieldsnapshot: number;
+  marketcapsnapshot: null;
+  beta: number;
+  countrycode: string;
+  ceoname: null;
+  cfoname: string;
+  cooname: null;
+  employeecount: number;
+  eps: number;
+}
+
+export interface Sector {
+  name: string;
+  icon: string;
+}
+
+type InstrumentType = 'stock' | 'fund';

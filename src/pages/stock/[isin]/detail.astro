@@ -1,0 +1,12 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+
+const { isin } = Astro.params;
+// TODO: load the details of a single stock
+---
+
+<Layout title={`STOCK ${isin}`}>
+  <main>
+    {isin}
+  </main>
+</Layout>

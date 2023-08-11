@@ -1,0 +1,143 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import type {
+  Fund,
+  PortfolioDetailResponse,
+  StockFullInfo,
+} from "../../../../types";
+import { getAmountInPortfolio } from "../../../../utils/calculation";
+import { formatCurrency } from "../../../../utils/intl";
+import { getLogoUrl } from "../../../../utils/logos";
+
+const { id, isin } = Astro.params;
+
+const portfolioResponse = (await (
+  await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolio/${id}/detail`)
+).json()) as PortfolioDetailResponse;
+
+const isInstrumentFromPortfolio =
+  portfolioResponse.data.stocks.some((stock) => stock.isin === isin) ||
+  portfolioResponse.data.funds.some((stock) => stock.isin === isin);
+
+let detailInstrument: StockFullInfo | Fund | undefined;
+
+if (!isInstrumentFromPortfolio) {
+  console.log(`Fetch the instrument: ${isin}`);
+} else {
+  detailInstrument = portfolioResponse.data.stocks.some(
+    (stock) => stock.isin === isin
+  )
+    ? (portfolioResponse.data.stocks.find(
+        (stock) => stock.isin === isin
+      ) as StockFullInfo)
+    : (portfolioResponse.data.funds.find((fund) => fund.isin === isin) as Fund);
+}
+---
+
+<Layout title={`Neue Order für Portfolio ${portfolioResponse.data.name}`}>
+  <main>
+    <h2 class="name-instrument">
+      <img
+        src={getLogoUrl(detailInstrument!)}
+        alt={`Logo ${detailInstrument?.name}`}
+        width="40"
+        height="40"
+      />
+      <span>{detailInstrument?.name}</span>
+    </h2>
+    <section class="order">
+      <div class="price">
+        Preis: {
+          formatCurrency(detailInstrument?.price_snapshot!, "EUR", "de-DE")
+        }
+      </div>
+      <div class="actions">
+        <button class="btn-order btn-sell" type="button">Verkaufen</button>
+        <input
+          class="amount"
+          type="number"
+          name="order-amount"
+          id="order-amount"
+          min="0"
+          placeholder="0"
+          -
+        />
+        <button class="btn-order btn-buy" type="button">Kaufen</button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="instrument-info">
+        <p>Info zum Aktuellen Instrument hier</p>
+      </div>
+      <div class="instruments-list">
+        <p>Liste mit Links zu aller bekannten Instrumente - dem ausgewählten</p>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .name-instrument {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    & span {
+      font-size: 1.2rem;
+      max-inline-size: 300px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .order {
+    color: hsl(0, 0, 5%);
+    background-color: hsl(188, 90%, 11%);
+    border-radius: 2px;
+    padding: 0.55rem;
+    margin-block: 0.35rem;
+  }
+
+  .price {
+    text-align: center;
+    padding-block-end: 0.5em;
+    font-size: 1.15rem;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .btn-order {
+    display: block;
+    padding: 1rem;
+    flex-grow: 1;
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-sell {
+    background-color: var(--red);
+    border-start-start-radius: 2px;
+    border-end-start-radius: 2px;
+  }
+
+  .btn-buy {
+    background-color: var(--green);
+    border-start-end-radius: 2px;
+    border-end-end-radius: 2px;
+  }
+
+  .amount {
+    border: none;
+    background-color: #121212;
+    font-size: 1.15rem;
+    max-inline-size: 80px;
+    text-align: center;
+  }
+</style>

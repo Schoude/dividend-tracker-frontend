@@ -1,4 +1,4 @@
-import type { FundsStatus, StocksStatus } from '../types';
+import type { Fund, FundsStatus, PortfolioDetailResponse, StockFullInfo, StocksStatus } from '../types';
 import { formatCurrency } from './intl';
 
 export function getValueOfPortfolio(
@@ -28,4 +28,22 @@ export function getValueOfPortfolio(
 
 export function getPercentage(value1: number, value2: number) {
   return `${((value1 / value2) * 100).toFixed(2)}%`;
+}
+
+export function getAmountInPortfolio(
+  portfolio: PortfolioDetailResponse,
+  instrument: StockFullInfo | Fund
+) {
+  let amount = 0;
+  if (instrument.type_id === "stock") {
+    amount = portfolio.data.stocksStatus.find(
+      (stock) => stock.isin === instrument.isin
+    )?.totalAmount!;
+  } else {
+    amount = portfolio.data.fundsStatus.find(
+      (fund) => fund.isin === instrument.isin
+    )?.totalAmount!;
+  }
+
+  return amount.toFixed(2);
 }
