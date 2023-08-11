@@ -52,7 +52,14 @@ if (!isInstrumentFromPortfolio) {
         }
       </div>
       <form class="actions">
-        <button class="btn-order btn-sell" type="button">Verkaufen</button>
+        <button
+          class="btn-order btn-sell"
+          type="button"
+          disabled={getAmountInPortfolio(
+            portfolioResponse,
+            detailInstrument!
+          ) === "0.00"}>Verkaufen</button
+        >
         <input
           class="amount"
           type="number"

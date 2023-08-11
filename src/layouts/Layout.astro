@@ -60,6 +60,11 @@ const { title } = Astro.props;
     border: none;
     cursor: pointer;
     padding: 0;
+
+    &:disabled {
+      cursor: not-allowed;
+      filter: grayscale(1);
+    }
   }
 
   button,
