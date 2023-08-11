@@ -64,6 +64,11 @@ if (!isInstrumentFromPortfolio) {
         />
         <button class="btn-order btn-buy" type="button">Kaufen</button>
       </form>
+      <p class="amount-current">
+        Derzeitige Anzahl: {
+          getAmountInPortfolio(portfolioResponse, detailInstrument!)
+        }
+      </p>
     </section>
 
     <section class="grid">
@@ -115,7 +120,7 @@ if (!isInstrumentFromPortfolio) {
                 <h3>Branchen:</h3>
                 {detailInstrument.sectors.map((sector) => (
                   <p>
-                    <img src={sector.icon} />
+                    <img src={sector.icon} style="filter: invert(1);" />
                     {sector.name}
                   </p>
                 ))}
@@ -215,7 +220,9 @@ if (!isInstrumentFromPortfolio) {
       </div>
       <hr />
       <div class="instruments-list">
-        <p>Liste mit Links zu aller bekannten Instrumente - dem ausgewählten</p>
+        <p>
+          Liste mit Links zu allen bekannten Instrumente minus dem Ausgewählten
+        </p>
       </div>
     </section>
   </main>
@@ -229,6 +236,7 @@ if (!isInstrumentFromPortfolio) {
 
     & span {
       font-size: 1.2rem;
+      font-weight: 500;
       max-inline-size: 300px;
       overflow: hidden;
       white-space: nowrap;
@@ -244,10 +252,16 @@ if (!isInstrumentFromPortfolio) {
     margin-block: 0.35rem;
   }
 
-  .price {
+  .price,
+  .amount-current {
     text-align: center;
     padding-block-end: 0.5em;
     font-size: 1.15rem;
+  }
+
+  .amount-current {
+    padding-block-start: 0.5em;
+    padding-block-end: 0;
   }
 
   .actions {
