@@ -28,7 +28,7 @@ export interface StockFullInfo {
   name: string;
   price_snapshot: number;
   ipo_date: number;
-  type_id: InstrumentType;
+  type_id: 'stock';
   exchange_id: string;
   image_id: string;
   distribution_frequency: string;
@@ -66,7 +66,7 @@ export interface Fund {
   image_id: string;
   isin: string;
   price_snapshot: number;
-  type_id: InstrumentType;
+  type_id: 'fund';
   dividends_fund: Dividend[];
 }
 
