@@ -1,0 +1,79 @@
+---
+import type { AnalystRatings } from "../../types";
+import { formatCurrency } from "../../utils/intl";
+export interface Props {
+  analyst_ratings: AnalystRatings;
+}
+
+const { analyst_ratings } = Astro.props;
+---
+
+<section class="stock-ratings">
+  <h3 class="heading">Analystenbewertungen</h3>
+  <div class="inner">
+    <div class="prices">
+      <h4>Kursziel</h4>
+      <dl>
+        <dt>
+          Preis hoch{" "}
+        </dt>
+        <dd>
+          {formatCurrency(analyst_ratings.target_price_high, "EUR", "de-DE")}
+        </dd>
+        <dt>
+          Preis mittel{" "}
+        </dt>
+        <dd>
+          {formatCurrency(analyst_ratings.target_price_average, "EUR", "de-DE")}
+        </dd>
+        <dt>
+          Preis niedrig{" "}
+        </dt>
+        <dd>
+          {formatCurrency(analyst_ratings.target_price_low, "EUR", "de-DE")}
+        </dd>
+      </dl>
+    </div>
+    <div class="recommendations">
+      <h4>Empfehlungen</h4>
+      <dl>
+        <dt>Kaufen</dt>
+        <dd>{analyst_ratings.recommendations_buy}</dd>
+        <dt>Outperform</dt>
+        <dd>{analyst_ratings.recommendations_outperform}</dd>
+        <dt>Halten</dt>
+        <dd>{analyst_ratings.recommendations_hold}</dd>
+        <dt>Underperform</dt>
+        <dd>{analyst_ratings.recommendations_underperform}</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .heading {
+    margin-block-end: 0.45rem;
+  }
+
+  .inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 0.5rem;
+  }
+
+  h4 {
+    text-decoration: underline;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.75rem;
+    margin: 0;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 200;
+  }
+</style>
