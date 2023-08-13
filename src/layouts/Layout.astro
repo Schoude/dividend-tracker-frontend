@@ -1,4 +1,6 @@
 ---
+import ViewTransitions from "astro/components/ViewTransitions.astro";
+
 interface Props {
   title: string;
 }
@@ -21,55 +23,56 @@ const { title } = Astro.props;
       href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500&display=swap"
       rel="stylesheet"
     />
+    <ViewTransitions />
   </head>
   <body>
     <slot />
+    <style is:global>
+      :root {
+        --red: hsl(355, 77%, 43%);
+        --green: hsl(136, 51%, 44%);
+      }
+
+      * {
+        font-weight: 300;
+        box-sizing: border-box;
+      }
+
+      html {
+        font-family: "Kanit", sans-serif;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      p {
+        margin: 0;
+      }
+
+      :any-link {
+        color: initial;
+        text-decoration: none;
+      }
+
+      button {
+        border: none;
+        cursor: pointer;
+        padding: 0;
+
+        &:disabled {
+          cursor: not-allowed;
+          filter: grayscale(1);
+        }
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+    </style>
   </body>
 </html>
-<style is:global>
-  :root {
-    --red: hsl(355, 77%, 43%);
-    --green: hsl(136, 51%, 44%);
-  }
-
-  * {
-    font-weight: 300;
-    box-sizing: border-box;
-  }
-
-  html {
-    font-family: "Kanit", sans-serif;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p {
-    margin: 0;
-  }
-
-  :any-link {
-    color: initial;
-    text-decoration: none;
-  }
-
-  button {
-    border: none;
-    cursor: pointer;
-    padding: 0;
-
-    &:disabled {
-      cursor: not-allowed;
-      filter: grayscale(1);
-    }
-  }
-
-  button,
-  input,
-  textarea {
-    font: inherit;
-  }
-</style>
