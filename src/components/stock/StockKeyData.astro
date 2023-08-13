@@ -9,7 +9,7 @@ export interface Props {
 const { stock } = Astro.props;
 ---
 
-<div class="stock-key-data">
+<section class="stock-key-data">
   <h3 class="heading">Eckdaten</h3>
   <dl>
     <dt>IPO</dt>
@@ -29,7 +29,7 @@ const { stock } = Astro.props;
     <dt>Marktkapitalisierung</dt>
     <dd>{stock.company_infos.marketcapsnapshot}</dd>
   </dl>
-</div>
+</section>
 
 <style>
   .heading {

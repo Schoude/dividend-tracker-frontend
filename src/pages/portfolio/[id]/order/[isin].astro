@@ -43,6 +43,9 @@ if (!isInstrumentFromPortfolio) {
 
 <Layout title={`Neue Order für Portfolio ${portfolioResponse.data.name}`}>
   <main>
+    <h1>
+      <a href={`/portfolio/${id}/detail`}>"{portfolioResponse.data.name}"</a>
+    </h1>
     <h2 class="name-instrument">
       <img
         src={getLogoUrl(detailInstrument!)}
@@ -85,15 +88,13 @@ if (!isInstrumentFromPortfolio) {
     </section>
 
     <section class="grid">
-      <div class="instrument-info">
-        {
-          detailInstrument?.type_id === "stock" ? (
-            <StockDetails stock={detailInstrument} />
-          ) : (
-            <div class="fund" />
-          )
-        }
-      </div>
+      {
+        detailInstrument?.type_id === "stock" ? (
+          <StockDetails stock={detailInstrument} />
+        ) : (
+          <div class="fund" />
+        )
+      }
       <hr />
       <div class="instruments-list">
         <p>
@@ -106,6 +107,11 @@ if (!isInstrumentFromPortfolio) {
 
 <style>
   .name-instrument {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    padding-block: 0.25rem;
+    background-color: hsl(0, 0%, 7%);
     display: flex;
     align-items: center;
     gap: 0.25rem;
