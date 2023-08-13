@@ -2,10 +2,11 @@
 import type { AnalystRatings } from "../../types";
 import { formatCurrency } from "../../utils/intl";
 export interface Props {
+  price_snapshot: number;
   analyst_ratings: AnalystRatings;
 }
 
-const { analyst_ratings } = Astro.props;
+const { analyst_ratings, price_snapshot } = Astro.props;
 ---
 
 <section class="stock-ratings">
@@ -14,6 +15,12 @@ const { analyst_ratings } = Astro.props;
     <div class="prices">
       <h4>Kursziel</h4>
       <dl>
+        <dt style="font-style: italic;">
+          Preis aktuell{" "}
+        </dt>
+        <dd style="font-style: italic;">
+          {formatCurrency(price_snapshot, "EUR", "de-DE")}
+        </dd>
         <dt>
           Preis hoch{" "}
         </dt>

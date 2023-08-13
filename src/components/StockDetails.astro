@@ -26,7 +26,10 @@ const { stock } = Astro.props;
 
   <StockEmployees stock={stock} />
 
-  <StockRatings analyst_ratings={stock.analyst_ratings} />
+  <StockRatings
+    analyst_ratings={stock.analyst_ratings}
+    price_snapshot={stock.price_snapshot}
+  />
 
   <StockDividends stock={stock} />
 
