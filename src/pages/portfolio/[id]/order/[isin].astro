@@ -22,7 +22,13 @@ const isInstrumentFromPortfolio =
 let detailInstrument: StockFullInfo | Fund | undefined;
 
 if (!isInstrumentFromPortfolio) {
-  console.log(`Fetch the instrument: ${isin}`);
+  const { data } = await (
+    await fetch(`${import.meta.env.VITE_URL_BASE}/api/instrument/${isin}`)
+  ).json();
+
+  console.log({ data });
+
+  detailInstrument = data;
 } else {
   detailInstrument = portfolioResponse.data.stocks.some(
     (stock) => stock.isin === isin
@@ -55,10 +61,7 @@ if (!isInstrumentFromPortfolio) {
         <button
           class="btn-order btn-sell"
           type="button"
-          disabled={getAmountInPortfolio(
-            portfolioResponse,
-            detailInstrument!
-          ) === "0.00"}>Verkaufen</button
+          disabled={!isInstrumentFromPortfolio}>Verkaufen</button
         >
         <input
           class="amount"
@@ -73,7 +76,9 @@ if (!isInstrumentFromPortfolio) {
       </form>
       <p class="amount-current">
         Derzeitige Anzahl: {
-          getAmountInPortfolio(portfolioResponse, detailInstrument!)
+          isInstrumentFromPortfolio
+            ? getAmountInPortfolio(portfolioResponse, detailInstrument!)
+            : 0
         }
       </p>
     </section>
