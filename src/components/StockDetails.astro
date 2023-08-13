@@ -1,6 +1,7 @@
 ---
 import type { StockFullInfo } from "../types";
 import { formatCurrency } from "../utils/intl";
+import StockDividends from "./stock/StockDividends.astro";
 import StockEmployees from "./stock/StockEmployees.astro";
 import StockKeyData from "./stock/StockKeyData.astro";
 import StockRatings from "./stock/StockRatings.astro";
@@ -27,22 +28,7 @@ const { stock } = Astro.props;
 
   <StockRatings analyst_ratings={stock.analyst_ratings} />
 
-  <div class="dividends">
-    <h3 class="heading">Dividenden</h3>
-    <p>Häufigkeit: {stock.distribution_frequency}</p>
-    <div class="dividends-upcoming">
-      {
-        stock.dividends_stock.map((dividend) => (
-          <div class="dividend">
-            <p>{formatCurrency(dividend.amount)}</p>
-            <p>EX: {dividend.ex_date_iso}</p>
-            <p>Auszahlung: {dividend.payment_date_iso}</p>
-            <p>Info: {dividend.info}</p>
-          </div>
-        ))
-      }
-    </div>
-  </div>
+  <StockDividends stock={stock} />
 
   <div class="events">
     <h3 class="heading">Events</h3>
@@ -64,7 +50,7 @@ const { stock } = Astro.props;
 
   .description {
     & p {
-      max-block-size: 140px;
+      max-block-size: 120px;
       overflow-y: auto;
     }
   }

@@ -1,0 +1,83 @@
+---
+import type { StockFullInfo } from "../../types";
+import { isInPast } from "../../utils/date";
+import { formatCurrency } from "../../utils/intl";
+
+export interface Props {
+  stock: StockFullInfo;
+}
+
+const { stock } = Astro.props;
+---
+
+<section class="stock-dividends">
+  <h3 class="heading">Dividenden</h3>
+  <p>Häufigkeit: {stock.distribution_frequency}</p>
+  <ul class="dividends">
+    {
+      stock.dividends_stock.map((dividend) => (
+        <li
+          class="dividend"
+          class:list={[{ payed: isInPast(dividend.payment_date_unix) }]}
+        >
+          <dl>
+            <dt>Betrag</dt>
+            <dt>{formatCurrency(dividend.amount)}</dt>
+            <dt>EX:</dt>
+            <dd>{dividend.ex_date_iso}</dd>
+            <dt>Auszahlung:</dt>
+            <dd>{dividend.payment_date_iso}</dd>
+            <dt>Info:</dt>
+            <dd>{dividend.info}</dd>
+          </dl>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .stock-dividends {
+    block-size: 100%;
+  }
+
+  .heading {
+    margin-block-end: 0.45rem;
+  }
+
+  .dividends {
+    padding: 0.5rem;
+    overflow-x: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 0.5rem;
+    padding-block: 0.75rem;
+  }
+
+  .dividend {
+    min-inline-size: fit-content;
+    padding-block: 0.5rem;
+    padding-inline: 0.75rem;
+    background-color: hsl(0, 0%, 5%);
+    border: 1px solid rgb(53, 53, 53);
+    border-radius: 4px;
+
+    &.payed {
+      border-color: hsl(120, 100%, 23%);
+    }
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.75rem;
+    margin: 0;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 200;
+  }
+</style>
