@@ -1,0 +1,149 @@
+---
+import type { StockFullInfo } from "../types";
+import { formatCurrency } from "../utils/intl";
+
+export interface Props {
+  stock: StockFullInfo;
+}
+
+const { stock } = Astro.props;
+---
+
+<section class="stock-details">
+  <div class="key-data">
+    <h3>Eckdaten</h3>
+    <p>
+      IPO
+      {new Date(stock.ipo_date).toLocaleDateString()}
+    </p>
+    <p>
+      Gründungsjahr {stock.company_infos.yearfounded}
+    </p>
+    <p>
+      EPS
+      {stock.company_infos.eps}
+    </p>
+    <p>
+      KVG (price/earnings ratio)
+      {stock.company_infos.peratiosnapshot}
+    </p>
+    <p>
+      Kurs-Buchwert-Verhältnis (price-to-book ratio)
+      {stock.company_infos.pbratiosnapshot}
+    </p>
+    <p>
+      Beta
+      {stock.company_infos.beta}
+    </p>
+    <p>
+      Land
+      {stock.company_infos.countrycode}
+    </p>
+    <p>
+      Marktkapitalisierung
+      {stock.company_infos.marketcapsnapshot}
+    </p>
+  </div>
+
+  <div class="description">
+    <h3>Beschreibung</h3>
+    <p>{stock.company_infos.description}</p>
+  </div>
+
+  <div class="sectors">
+    <h3>Branchen:</h3>
+    {
+      stock.sectors.map((sector) => (
+        <p>
+          <img src={sector.icon} style="filter: invert(1);" />
+          {sector.name}
+        </p>
+      ))
+    }
+  </div>
+
+  <div class="employees">
+    <h3>Personal</h3>
+    <p>CEO: {stock.company_infos.ceoname}</p>
+    <p>CFO: {stock.company_infos.cfoname}</p>
+    <p>COO: {stock.company_infos.cooname}</p>
+    <p>
+      Angestellte: {stock.company_infos.employeecount}
+    </p>
+  </div>
+
+  <div class="ratings">
+    <h3>Analystenbewertungen</h3>
+    <div class="prices">
+      <p>
+        Preis hoch:{" "}
+        {
+          formatCurrency(
+            stock.analyst_ratings.target_price_high,
+            "EUR",
+            "de-DE"
+          )
+        }
+      </p>
+      <p>
+        Preis mittel:{" "}
+        {
+          formatCurrency(
+            stock.analyst_ratings.target_price_average,
+            "EUR",
+            "de-DE"
+          )
+        }
+      </p>
+      <p>
+        Preis niedrig:{" "}
+        {formatCurrency(stock.analyst_ratings.target_price_low, "EUR", "de-DE")}
+      </p>
+      <p>
+        Kaufen:
+        {stock.analyst_ratings.recommendations_buy}
+      </p>
+      <p>
+        Outperform:
+        {stock.analyst_ratings.recommendations_outperform}
+      </p>
+      <p>
+        Halten:
+        {stock.analyst_ratings.recommendations_hold}
+      </p>
+      <p>
+        Underperform:
+        {stock.analyst_ratings.recommendations_underperform}
+      </p>
+    </div>
+  </div>
+
+  <div class="dividends">
+    <h3>Dividenden</h3>
+    <p>Häufigkeit: {stock.distribution_frequency}</p>
+    <div class="dividends-upcoming">
+      {
+        stock.dividends_stock.map((dividend) => (
+          <div class="dividend">
+            <p>{formatCurrency(dividend.amount)}</p>
+            <p>EX: {dividend.ex_date_iso}</p>
+            <p>Auszahlung: {dividend.payment_date_iso}</p>
+            <p>Info: {dividend.info}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="events">
+    <h3>Events</h3>
+    {
+      stock.company_events.map((event) => (
+        <div class="event">
+          <h4>{event.title}</h4>
+          <p>{event.description}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>
