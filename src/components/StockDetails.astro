@@ -1,8 +1,8 @@
 ---
 import type { StockFullInfo } from "../types";
-import { formatCurrency } from "../utils/intl";
 import StockDividends from "./stock/StockDividends.astro";
 import StockEmployees from "./stock/StockEmployees.astro";
+import StockEvents from "./stock/StockEvents.astro";
 import StockKeyData from "./stock/StockKeyData.astro";
 import StockRatings from "./stock/StockRatings.astro";
 import StockSectors from "./stock/StockSectors.astro";
@@ -17,10 +17,10 @@ const { stock } = Astro.props;
 <section class="stock-details">
   <StockKeyData stock={stock} />
 
-  <div class="description">
+  <section class="description">
     <h3 class="heading">Beschreibung</h3>
     <p>{stock.company_infos.description}</p>
-  </div>
+  </section>
 
   <StockSectors sectors={stock.sectors} />
 
@@ -30,17 +30,7 @@ const { stock } = Astro.props;
 
   <StockDividends stock={stock} />
 
-  <div class="events">
-    <h3 class="heading">Events</h3>
-    {
-      stock.company_events.map((event) => (
-        <div class="event">
-          <h4>{event.title}</h4>
-          <p>{event.description}</p>
-        </div>
-      ))
-    }
-  </div>
+  <StockEvents stock={stock} />
 </section>
 
 <style>
