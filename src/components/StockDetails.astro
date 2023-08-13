@@ -1,7 +1,9 @@
 ---
 import type { StockFullInfo } from "../types";
 import { formatCurrency } from "../utils/intl";
+import StockEmployees from "./stock/StockEmployees.astro";
 import StockKeyData from "./stock/StockKeyData.astro";
+import StockSectors from "./stock/StockSectors.astro";
 
 export interface Props {
   stock: StockFullInfo;
@@ -12,35 +14,19 @@ const { stock } = Astro.props;
 
 <section class="stock-details">
   <StockKeyData stock={stock} />
+
   <div class="description">
-    <h3>Beschreibung</h3>
+    <h3 class="heading">Beschreibung</h3>
     <p>{stock.company_infos.description}</p>
   </div>
 
-  <div class="sectors">
-    <h3>Branchen:</h3>
-    {
-      stock.sectors.map((sector) => (
-        <p>
-          <img src={sector.icon} style="filter: invert(1);" />
-          {sector.name}
-        </p>
-      ))
-    }
-  </div>
+  <StockSectors sectors={stock.sectors} />
 
-  <div class="employees">
-    <h3>Personal</h3>
-    <p>CEO: {stock.company_infos.ceoname}</p>
-    <p>CFO: {stock.company_infos.cfoname}</p>
-    <p>COO: {stock.company_infos.cooname}</p>
-    <p>
-      Angestellte: {stock.company_infos.employeecount}
-    </p>
-  </div>
+  <StockEmployees stock={stock} />
 
   <div class="ratings">
-    <h3>Analystenbewertungen</h3>
+    <h3 class="heading">Analystenbewertungen</h3>
+
     <div class="prices">
       <p>
         Preis hoch:{" "}
@@ -86,7 +72,7 @@ const { stock } = Astro.props;
   </div>
 
   <div class="dividends">
-    <h3>Dividenden</h3>
+    <h3 class="heading">Dividenden</h3>
     <p>Häufigkeit: {stock.distribution_frequency}</p>
     <div class="dividends-upcoming">
       {
@@ -103,7 +89,7 @@ const { stock } = Astro.props;
   </div>
 
   <div class="events">
-    <h3>Events</h3>
+    <h3 class="heading">Events</h3>
     {
       stock.company_events.map((event) => (
         <div class="event">
@@ -114,3 +100,9 @@ const { stock } = Astro.props;
     }
   </div>
 </section>
+
+<style>
+  .heading {
+    margin-block-end: 0.45rem;
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+import type { StockFullInfo } from "../../types";
+
+export interface Props {
+  stock: StockFullInfo;
+}
+
+const { stock } = Astro.props;
+---
+
+<section class="stock-employees">
+  <h3 class="heading">Personal</h3>
+  <dl>
+    <dt>CEO:</dt>
+    <dd>{stock.company_infos.ceoname}</dd>
+    <dt>CFO:</dt>
+    <dd>{stock.company_infos.cfoname}</dd>
+    <dt>COO:</dt>
+    <dd>{stock.company_infos.cooname}</dd>
+    <dt>Angestellte:</dt>
+    <dd>
+      {stock.company_infos.employeecount}
+    </dd>
+  </dl>
+</section>
+
+<style>
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.75rem;
+    margin: 0;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 200;
+  }
+</style>
