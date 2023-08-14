@@ -69,7 +69,7 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                         }
                       >
                         <div class="price">
-                          {formatCurrency(stock.currentPrice, 'EUR', 'de-DE')}
+                          {formatCurrency(stock.currentPrice, 'EUR', 'de-DE')}&nbsp;
                           {stock.percentChange}%
                         </div>
                         <span>{formatCurrency(stock.currentValue, 'EUR', 'de-DE')}</span>
@@ -113,10 +113,10 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                         }
                       >
                       <p>
-                          {formatCurrency(fund.currentPrice, 'EUR', 'de-DE')}
-                          {fund.percentChange}%
-                        </p>
-                        <p>{formatCurrency(fund.currentValue, 'EUR', 'de-DE')}</p>
+                        {formatCurrency(fund.currentPrice, 'EUR', 'de-DE')}&nbsp;
+                        {fund.percentChange}%
+                      </p>
+                      <p>{formatCurrency(fund.currentValue, 'EUR', 'de-DE')}</p>
                       </div>
                     </div>
                   </li>
