@@ -1,7 +1,5 @@
 ---
 import type { StockFullInfo } from "../../types";
-import { isInPast } from "../../utils/date";
-import { formatCurrency } from "../../utils/intl";
 
 export interface Props {
   stock: StockFullInfo;
@@ -45,16 +43,12 @@ const { stock } = Astro.props;
   }
 
   .event {
-    min-inline-size: fit-content;
+    min-inline-size: 240px;
     padding-block: 0.5rem;
     padding-inline: 0.75rem;
     background-color: hsl(0, 0%, 5%);
     border: 1px solid rgb(53, 53, 53);
     border-radius: 4px;
-
-    &.payed {
-      border-color: hsl(120, 100%, 23%);
-    }
   }
 
   dl {

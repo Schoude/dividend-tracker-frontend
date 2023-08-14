@@ -140,7 +140,7 @@ for (let i = currentMonth; i <= 12; i++) {
 
 <Layout title={`Dividenden-Übersicht: ${name}`}>
   <main>
-    <h1><a href={`/portfolio/${portfolioId}/detail`}>"{name}"</a></h1>
+    <h1><a href={`/portfolio/${portfolioId}/detail`}><q>{name}</q></a></h1>
     <section>
       {
         dividendTimeline.map((month) => (

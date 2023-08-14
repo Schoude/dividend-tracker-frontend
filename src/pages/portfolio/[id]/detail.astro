@@ -19,7 +19,7 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
 
 <Layout title={`Portfolio Detail: ${data.name}`}>
   <main>
-    <h1>"{data.name}"</h1>
+    <h1><q>{data.name}</q></h1>
     <section>
       <h2>{totalValue}</h2>
       <div class="amounts">
@@ -68,11 +68,11 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                               : ''
                         }
                       >
-                        <p>
+                        <div class="price">
                           {formatCurrency(stock.currentPrice, 'EUR', 'de-DE')}
                           {stock.percentChange}%
-                        </p>
-                        <p>{formatCurrency(stock.currentValue, 'EUR', 'de-DE')}</p>
+                        </div>
+                        <span>{formatCurrency(stock.currentValue, 'EUR', 'de-DE')}</span>
                       </div>
                     </div>
                   </li>
@@ -168,7 +168,7 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
   }
 
   li + li {
-    margin-block-start: 0.75rem;
+    margin-block-start: 1rem;
   }
 
   .investment-name {
@@ -181,6 +181,9 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
   }
 
   .details {
+    display: flex;
+    gap: 2rem;
+
     &.gain {
       color: var(--green);
     }
