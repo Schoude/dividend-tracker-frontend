@@ -18,6 +18,8 @@ const { stock } = Astro.props;
     <dd>{stock.company_infos.yearfounded}</dd>
     <dt>EPS</dt>
     <dd>{formatCurrency(stock.company_infos.eps)}</dd>
+    <dt>Dividendenrendite</dt>
+    <dd>{(stock.company_infos.dividendyieldsnapshot * 100).toFixed(2)}%</dd>
     <dt>KGV (price/earnings ratio)</dt>
     <dd>{stock.company_infos.peratiosnapshot}</dd>
     <dt>Kurs-Buchwert-Verhältnis</dt>
