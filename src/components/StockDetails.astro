@@ -17,12 +17,12 @@ const { stock } = Astro.props;
 <section class="stock-details">
   <StockKeyData stock={stock} />
 
+  <StockSectors sectors={stock.sectors} />
+
   <section class="description">
     <h3 class="heading">Beschreibung</h3>
     <p>{stock.company_infos.description}</p>
   </section>
-
-  <StockSectors sectors={stock.sectors} />
 
   <StockEmployees stock={stock} />
 
