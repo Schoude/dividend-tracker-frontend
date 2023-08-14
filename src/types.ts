@@ -12,7 +12,7 @@ interface Order {
 
 export type Orders = Order[];
 
-interface Dividend {
+export interface Dividend {
   isin: string;
   payment_date_iso: string;
   payment_date_unix: number;
@@ -55,21 +55,6 @@ type StatusFund = StatusStock;
 
 export type StocksStatus = StatusStock[];
 
-export interface Fund {
-  name: string;
-  description: string;
-  distribution_frequency: string;
-  exchange_id: string;
-  focus: string;
-  fund_name: string;
-  id: number;
-  image_id: string;
-  isin: string;
-  price_snapshot: number;
-  type_id: 'fund';
-  dividends_fund: Dividend[];
-}
-
 export type FundsStatus = StatusFund[];
 
 interface DividendOfMonth {
@@ -91,7 +76,7 @@ export interface PortfolioDetailResponse {
     id: number;
     name: string;
     stocks: StockFullInfo[];
-    funds: Fund[];
+    funds: FundFullInfo[];
     stocksStatus: StocksStatus;
     fundsStatus: FundsStatus;
     orders: Orders;
@@ -137,4 +122,16 @@ export interface Sector {
   icon: string;
 }
 
-type InstrumentType = 'stock' | 'fund';
+export interface FundFullInfo {
+  isin: string;
+  description: string;
+  distribution_frequency: string;
+  exchange_id: string;
+  focus: string;
+  name: string;
+  image_id: string;
+  price_snapshot: number;
+  type_id: string;
+  dividends_fund: Dividend[];
+  sectors: Sector[];
+}

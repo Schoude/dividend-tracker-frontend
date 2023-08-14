@@ -1,4 +1,4 @@
-import type { Fund, FundsStatus, PortfolioDetailResponse, StockFullInfo, StocksStatus } from '../types';
+import type { FundFullInfo, FundsStatus, PortfolioDetailResponse, StockFullInfo, StocksStatus } from '../types';
 import { formatCurrency } from './intl';
 
 export function getValueOfPortfolio(
@@ -32,7 +32,7 @@ export function getPercentage(value1: number, value2: number) {
 
 export function getAmountInPortfolio(
   portfolio: PortfolioDetailResponse,
-  instrument: StockFullInfo | Fund
+  instrument: StockFullInfo | FundFullInfo
 ) {
   let amount = 0;
   if (instrument.type_id === "stock") {

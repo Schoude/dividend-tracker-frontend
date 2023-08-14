@@ -1,6 +1,6 @@
 ---
 import type { StockFullInfo } from "../types";
-import StockDividends from "./stock/StockDividends.astro";
+import Dividends from "./common/Dividends.astro";
 import StockEmployees from "./stock/StockEmployees.astro";
 import StockEvents from "./stock/StockEvents.astro";
 import StockKeyData from "./stock/StockKeyData.astro";
@@ -31,7 +31,10 @@ const { stock } = Astro.props;
     price_snapshot={stock.price_snapshot}
   />
 
-  <StockDividends stock={stock} />
+  <Dividends
+    dividends={stock.dividends_stock}
+    distribution_frequency={stock.distribution_frequency}
+  />
 
   <StockEvents stock={stock} />
 </section>

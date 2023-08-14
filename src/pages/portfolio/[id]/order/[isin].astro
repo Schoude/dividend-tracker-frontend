@@ -1,8 +1,9 @@
 ---
+import FundDetails from "../../../../components/FundDetails.astro";
 import StockDetails from "../../../../components/StockDetails.astro";
 import Layout from "../../../../layouts/Layout.astro";
 import type {
-  Fund,
+  FundFullInfo,
   PortfolioDetailResponse,
   StockFullInfo,
 } from "../../../../types";
@@ -20,7 +21,7 @@ const isInstrumentFromPortfolio =
   portfolioResponse.data.stocks.some((stock) => stock.isin === isin) ||
   portfolioResponse.data.funds.some((stock) => stock.isin === isin);
 
-let detailInstrument: StockFullInfo | Fund | undefined;
+let detailInstrument: StockFullInfo | FundFullInfo | undefined;
 
 if (!isInstrumentFromPortfolio) {
   const { data } = await (
@@ -37,7 +38,9 @@ if (!isInstrumentFromPortfolio) {
     ? (portfolioResponse.data.stocks.find(
         (stock) => stock.isin === isin
       ) as StockFullInfo)
-    : (portfolioResponse.data.funds.find((fund) => fund.isin === isin) as Fund);
+    : (portfolioResponse.data.funds.find(
+        (fund) => fund.isin === isin
+      ) as FundFullInfo);
 }
 ---
 
@@ -92,9 +95,9 @@ if (!isInstrumentFromPortfolio) {
     <section class="grid">
       {
         detailInstrument?.type_id === "stock" ? (
-          <StockDetails stock={detailInstrument} />
+          <StockDetails stock={detailInstrument as StockFullInfo} />
         ) : (
-          <div class="fund" />
+          <FundDetails fund={detailInstrument as FundFullInfo} />
         )
       }
       <hr />

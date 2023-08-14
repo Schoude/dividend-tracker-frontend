@@ -1,0 +1,44 @@
+---
+import type { FundFullInfo } from "../types";
+import Sectors from "../components/common/Sectors.astro";
+import Dividends from "./common/Dividends.astro";
+
+export interface Props {
+  fund: FundFullInfo;
+}
+
+const { fund } = Astro.props;
+---
+
+<section class="fund-details">
+  <section class="description">
+    <h3 class="heading">Beschreibung</h3>
+    <p>{fund.description}</p>
+  </section>
+
+  <Sectors sectors={fund.sectors} />
+
+  <Dividends
+    dividends={fund.dividends_fund}
+    distribution_frequency={fund.distribution_frequency}
+  />
+</section>
+
+<style>
+  .fund-details {
+    & :global(section + section) {
+      margin-block-start: 1.3rem;
+    }
+  }
+
+  .heading {
+    margin-block-end: 0.45rem;
+  }
+
+  .description {
+    & p {
+      max-block-size: 120px;
+      overflow-y: auto;
+    }
+  }
+</style>

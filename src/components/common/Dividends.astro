@@ -1,21 +1,22 @@
 ---
-import type { StockFullInfo } from "../../types";
+import type { Dividend } from "../../types";
 import { isInPast } from "../../utils/date";
 import { formatCurrency } from "../../utils/intl";
 
 export interface Props {
-  stock: StockFullInfo;
+  distribution_frequency: string;
+  dividends: Dividend[];
 }
 
-const { stock } = Astro.props;
+const { distribution_frequency, dividends } = Astro.props;
 ---
 
-<section class="stock-dividends">
+<section class="dividends">
   <h3 class="heading">Dividenden</h3>
-  <p>Häufigkeit: {stock.distribution_frequency}</p>
-  <ul class="dividends">
+  <p>Häufigkeit: {distribution_frequency}</p>
+  <ul class="dividends-list">
     {
-      stock.dividends_stock.map((dividend) => (
+      dividends.map((dividend) => (
         <li
           class="dividend"
           class:list={[{ payed: isInPast(dividend.payment_date_unix) }]}
@@ -37,7 +38,7 @@ const { stock } = Astro.props;
 </section>
 
 <style>
-  .stock-dividends {
+  .dividends {
     block-size: 100%;
   }
 
@@ -45,7 +46,7 @@ const { stock } = Astro.props;
     margin-block-end: 0.45rem;
   }
 
-  .dividends {
+  .dividends-list {
     padding: 0.5rem;
     overflow-x: auto;
     margin: 0;
