@@ -28,8 +28,6 @@ if (!isInstrumentFromPortfolio) {
     await fetch(`${import.meta.env.VITE_URL_BASE}/api/instrument/${isin}`)
   ).json();
 
-  console.log({ data });
-
   detailInstrument = data;
 } else {
   detailInstrument = portfolioResponse.data.stocks.some(
@@ -42,6 +40,12 @@ if (!isInstrumentFromPortfolio) {
         (fund) => fund.isin === isin
       ) as FundFullInfo);
 }
+
+const recommendationsResponse = (await (
+  await fetch(
+    `${import.meta.env.VITE_URL_BASE}/api/instruments/recommendations/${isin}`
+  )
+).json()) as { data: { stocks: StockFullInfo[]; funds: FundFullInfo[] } };
 ---
 
 <Layout title={`Neue Order für Portfolio ${portfolioResponse.data.name}`}>
@@ -102,9 +106,27 @@ if (!isInstrumentFromPortfolio) {
       }
       <hr />
       <div class="instruments-list">
-        <p>
-          Liste mit Links zu allen bekannten Instrumente minus dem Ausgewählten
-        </p>
+        <h3>Interessante Aktien</h3>
+        <ul class="stocks-recommendations">
+          {
+            recommendationsResponse.data.stocks.map((stock) => (
+              <a href={`/portfolio/${id}/order/${stock.isin}`}>
+                <li>{stock.name}</li>
+              </a>
+            ))
+          }
+        </ul>
+
+        <h3>Interessante ETFs</h3>
+        <ul class="funds-recommendations">
+          {
+            recommendationsResponse.data.funds.map((fund) => (
+              <a href={`/portfolio/${id}/order/${fund.isin}`}>
+                <li>{fund.name}</li>
+              </a>
+            ))
+          }
+        </ul>
       </div>
     </section>
   </main>
