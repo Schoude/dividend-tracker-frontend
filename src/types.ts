@@ -51,7 +51,7 @@ export interface StatusStock {
   valueChange: number;
 }
 
-type StatusFund = StatusStock;
+export type StatusFund = StatusStock;
 
 export type StocksStatus = StatusStock[];
 

@@ -1,4 +1,5 @@
 ---
+import InstrumentItem from "../../../components/common/InstrumentItem.astro";
 import Layout from "../../../layouts/Layout.astro";
 import type { PortfolioDetailResponse } from "../../../types";
 import { getValueOfPortfolio } from "../../../utils/calculation";
@@ -41,40 +42,15 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                 .sort((a, b) => b.currentValue - a.currentValue)
                 .map((stock) => (
                   <li>
-                    <div class="investment">
-                      <a
-                        class="investment-name"
-                        href={`/portfolio/${id}/order/${stock.isin}`}
-                      >
-                        <img
-                          src={getLogoUrl(
-                            data.stocks.find(
-                              (iterStock) => iterStock.isin === stock.isin
-                            )!
-                          )}
-                          alt={`Logo ${stock.name}`}
-                          width="40"
-                          height="40"
-                        />
-                        {stock.name}
-                      </a>
-                      <div
-                        class="details"
-                        class:list={
-                          Number(stock.percentChange) < 0
-                            ? "loss"
-                            : Number(stock.percentChange) > 0
-                              ? "gain"
-                              : ''
-                        }
-                      >
-                        <div class="price">
-                          {formatCurrency(stock.currentPrice, 'EUR', 'de-DE')}&nbsp;
-                          {stock.percentChange}%
-                        </div>
-                        <span>{formatCurrency(stock.currentValue, 'EUR', 'de-DE')}</span>
-                      </div>
-                    </div>
+                    <InstrumentItem
+                      portfolioId={id as string}
+                      instrument={stock}
+                      logoUrl={getLogoUrl(
+                        data.stocks.find(
+                          (iterStock) => iterStock.isin === stock.isin
+                        )!
+                      )}
+                    />
                   </li>
                 ))
             }
@@ -87,38 +63,15 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                 .sort((a, b) => b.currentValue - a.currentValue)
                 .map((fund) => (
                   <li>
-                    <div class="investment">
-                      <p class="investment-name">
-                        <a
-                          class="investment-name"
-                          href={`/portfolio/${id}/order/${fund.isin}`}
-                        >
-                          <img
-                            src={getLogoUrl(
-                              data.funds.find(
-                                (iterFund) => iterFund.isin === fund.isin
-                              )!
-                            )}
-                            alt={`Logo ${fund.name}`}
-                            width="40"
-                            height="40"
-                            height="40"
-                          />
-                          {fund.name}
-                        </a>
-                      <div
-                        class="details"
-                        class:list={
-                          Number(fund.percentChange) < 0 ? "loss" : "gain"
-                        }
-                      >
-                      <p>
-                        {formatCurrency(fund.currentPrice, 'EUR', 'de-DE')}&nbsp;
-                        {fund.percentChange}%
-                      </p>
-                      <p>{formatCurrency(fund.currentValue, 'EUR', 'de-DE')}</p>
-                      </div>
-                    </div>
+                    <InstrumentItem
+                      portfolioId={id as string}
+                      instrument={fund}
+                      logoUrl={getLogoUrl(
+                        data.funds.find(
+                          (iterFund) => iterFund.isin === fund.isin
+                        )!
+                      )}
+                    />
                   </li>
                 ))
             }
@@ -169,26 +122,5 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
 
   li + li {
     margin-block-start: 1rem;
-  }
-
-  .investment-name {
-    display: inline-block;
-    font-size: 1.2rem;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .details {
-    display: flex;
-    gap: 2rem;
-
-    &.gain {
-      color: var(--green);
-    }
-    &.loss {
-      color: var(--red);
-    }
   }
 </style>

@@ -1,0 +1,63 @@
+---
+import type { StatusFund, StatusStock } from "../../types";
+import { formatCurrency } from "../../utils/intl";
+
+export interface Props {
+  portfolioId: string;
+  instrument: StatusStock | StatusFund;
+  logoUrl: string;
+}
+
+const { portfolioId, instrument, logoUrl } = Astro.props;
+---
+
+<div class="investment">
+  <p class="investment-name">
+    <a
+      class="investment-name"
+      href={`/portfolio/${portfolioId}/order/${instrument.isin}`}
+    >
+      <img
+        src={logoUrl}
+        alt={`Logo ${instrument.name}`}
+        width="40"
+        height="40"
+        height="40"
+      />
+      {instrument.name}
+    </a>
+    <div
+      class="details"
+      class:list={Number(instrument.percentChange) < 0 ? "loss" : "gain"}
+    >
+      <p>
+        {formatCurrency(instrument.currentPrice, "EUR", "de-DE")}&nbsp;
+        {instrument.percentChange}%
+      </p>
+      <p>{formatCurrency(instrument.currentValue, "EUR", "de-DE")}</p>
+    </div>
+  </p>
+</div>
+
+<style>
+  .investment-name {
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .details {
+    display: flex;
+    gap: 2rem;
+
+    &.gain {
+      color: var(--green);
+    }
+    &.loss {
+      color: var(--red);
+    }
+  }
+</style>
