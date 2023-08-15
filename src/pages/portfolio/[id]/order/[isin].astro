@@ -61,6 +61,7 @@ const recommendationsResponse = (await (
         alt={`Logo ${detailInstrument?.name}`}
         width="40"
         height="40"
+        loading="lazy"
       />
       <span>{detailInstrument?.name}</span>
     </h2>
@@ -104,26 +105,58 @@ const recommendationsResponse = (await (
           <FundDetails fund={detailInstrument as FundFullInfo} />
         )
       }
-      <hr />
-      <div class="instruments-list">
+
+      <div class="recommendations-list">
         <h3>Interessante Aktien</h3>
-        <ul class="stocks-recommendations">
+        <ul class="recommendations">
           {
             recommendationsResponse.data.stocks.map((stock) => (
-              <a href={`/portfolio/${id}/order/${stock.isin}`}>
-                <li>{stock.name}</li>
-              </a>
+              <li>
+                <a
+                  class="instrument"
+                  href={`/portfolio/${id}/order/${stock.isin}`}
+                >
+                  <img
+                    src={getLogoUrl(stock)}
+                    alt={`Logo ${stock.name}`}
+                    width="40"
+                    height="40"
+                    height="40"
+                    loading="lazy"
+                  />
+                  <span class="name">{stock.name}</span>
+                  <span class="price">
+                    {formatCurrency(stock.price_snapshot, "EUR", "de-DE")}
+                  </span>
+                </a>
+              </li>
             ))
           }
         </ul>
 
         <h3>Interessante ETFs</h3>
-        <ul class="funds-recommendations">
+        <ul class="recommendations">
           {
             recommendationsResponse.data.funds.map((fund) => (
-              <a href={`/portfolio/${id}/order/${fund.isin}`}>
-                <li>{fund.name}</li>
-              </a>
+              <li>
+                <a
+                  class="instrument"
+                  href={`/portfolio/${id}/order/${fund.isin}`}
+                >
+                  <img
+                    src={getLogoUrl(fund)}
+                    alt={`Logo ${fund.name}`}
+                    width="40"
+                    height="40"
+                    height="40"
+                    loading="lazy"
+                  />
+                  <span class="name">{fund.name}</span>
+                  <span class="price">
+                    {formatCurrency(fund.price_snapshot, "EUR", "de-DE")}
+                  </span>
+                </a>
+              </li>
             ))
           }
         </ul>
@@ -206,5 +239,47 @@ const recommendationsResponse = (await (
     font-size: 1.15rem;
     max-inline-size: 80px;
     text-align: center;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li + li {
+    margin-block-start: 1rem;
+  }
+
+  .recommendations-list {
+    & h3 {
+      font-size: 1.3rem;
+      margin-block-start: 2rem;
+      margin-block-end: 0.75rem;
+    }
+  }
+
+  .recommendations {
+    .instrument {
+      font-size: 1.2rem;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .name {
+      max-inline-size: 230px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .price {
+      padding: 0;
+      font-size: 1rem;
+      flex-grow: 1;
+      text-align: end;
+    }
   }
 </style>
