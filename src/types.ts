@@ -135,15 +135,3 @@ export interface FundFullInfo {
   dividends_fund: Dividend[];
   sectors: Sector[];
 }
-
-export interface OrderRequest {
-  portfolioId: number;
-  isin: string;
-  name: string;
-  amount: number;
-  price: number;
-  type: "buy" | "sell";
-  instrumentType: "stock" | "fund";
-  currentAmount?: number | undefined;
-  isNew?: boolean | undefined;
-}

@@ -15,39 +15,168 @@ export interface Props {
 const { portfolioResponse, isInstrumentFromPortfolio, instrument } =
   Astro.props;
 
+const apiUrlBase = import.meta.env.VITE_URL_BASE;
+
 const price = formatCurrency(instrument.price_snapshot!, "EUR", "de-DE");
 
 const amount = isInstrumentFromPortfolio
   ? getAmountInPortfolio(portfolioResponse, instrument)
   : 0;
+
+// TODO: add date picker to select custom dates for the order!
 ---
 
-<section class="order">
-  <div class="price">
-    Preis: {price}
-  </div>
-  <form class="actions">
-    <button
-      class="btn-order btn-sell"
-      type="button"
-      disabled={!isInstrumentFromPortfolio}>Verkaufen</button
-    >
-    <input
-      class="amount"
-      type="number"
-      name="order-amount"
-      id="order-amount"
-      min="0"
-      max={amount}
-      placeholder="0"
-      -
-    />
-    <button class="btn-order btn-buy" type="button">Kaufen</button>
-  </form>
-  <p class="amount-current">
-    Anzahl: {amount}
-  </p>
-</section>
+<order-instrument
+  data-props={JSON.stringify({
+    apiUrlBase,
+    price: instrument.price_snapshot,
+    isInstrumentFromPortfolio,
+    portfolioId: portfolioResponse.data.id,
+    isin: instrument.isin,
+    name: instrument.name,
+    instrumentType: instrument.type_id,
+    currentAmount: amount,
+  })}
+>
+  <section class="order">
+    <div class="price">
+      Preis: {price}
+    </div>
+    <form class="actions">
+      <button
+        class="btn-order btn-sell"
+        type="button"
+        disabled={!isInstrumentFromPortfolio}>Verkaufen</button
+      >
+      <input
+        class="amount"
+        type="number"
+        name="order-amount"
+        id="order-amount"
+        min="0"
+        placeholder="0"
+        -
+      />
+      <button class="btn-order btn-buy" type="button">Kaufen</button>
+    </form>
+    <p class="amount-current">
+      <span>Anzahl: {amount}</span>
+      <span class="costs hidden"> </span>
+    </p>
+  </section>
+</order-instrument>
+
+<script>
+  interface PropsClient {
+    apiUrlBase: string;
+    price: number;
+    isInstrumentFromPortfolio: boolean;
+    portfolioId: number;
+    isin: string;
+    name: string;
+    instrumentType: "stock" | "fund";
+    currentAmount: number;
+  }
+
+  interface OrderRequest {
+    portfolioId: number;
+    isin: string;
+    name: string;
+    amount: number;
+    price: number;
+    type: "buy" | "sell";
+    instrumentType: "stock" | "fund";
+    currentAmount?: number | undefined;
+    isNew?: boolean | undefined;
+  }
+
+  class OrderInstrument extends HTMLElement {
+    formatter = new Intl.NumberFormat("de-DE", {
+      style: "currency",
+      currency: "EUR",
+    });
+
+    constructor() {
+      super();
+
+      const props = JSON.parse(this.dataset.props as string) as PropsClient;
+      const inputAmount = this.querySelector<HTMLInputElement>(".amount");
+      const costsDisplay = this.querySelector<HTMLSpanElement>(".costs");
+      const btnSell = this.querySelector<HTMLButtonElement>(".btn-sell");
+      const btnBuy = this.querySelector<HTMLButtonElement>(".btn-buy");
+
+      let amountValue = 0;
+      let costs = 0;
+      let loading = false;
+
+      inputAmount?.addEventListener("input", (e) => {
+        const target = e.target as HTMLInputElement;
+        amountValue = Number(target.value);
+
+        if (amountValue > 0) {
+          costsDisplay?.classList.remove("hidden");
+          costs = props.price * amountValue;
+          const costsFormated = this.formatter.format(costs);
+          costsDisplay!.innerText = `| Kosten/Profit: ${costsFormated}`;
+        } else {
+          amountValue = 0;
+          costs = 0;
+          costsDisplay?.classList.add("hidden");
+          costsDisplay!.innerText = `| Kosten/Profit: `;
+        }
+      });
+
+      btnBuy?.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        if (loading) {
+          return;
+        }
+
+        if (amountValue <= 0) {
+          console.log(`cant send: amount is invalid: ${amountValue}`);
+
+          return;
+        }
+
+        loading = true;
+
+        try {
+          const orderRequest: OrderRequest = {
+            portfolioId: props.portfolioId,
+            isin: props.isin,
+            name: props.name,
+            instrumentType: props.instrumentType,
+            type: "buy",
+            price: props.price,
+            amount: amountValue,
+            isNew: !props.isInstrumentFromPortfolio,
+          };
+
+          console.log({ orderRequest });
+
+          const res = await fetch(`${props.apiUrlBase}/api/order/buy`, {
+            method: "POST",
+            body: JSON.stringify(orderRequest),
+          });
+
+          if (!res.ok) {
+            console.log(res.status);
+            console.log(res.statusText);
+
+            return;
+          }
+
+          location.reload();
+        } catch (error) {
+          console.log((error as Error).message);
+        }
+      });
+    }
+  }
+
+  customElements.define("order-instrument", OrderInstrument);
+</script>
 
 <style>
   .order {
@@ -103,5 +232,9 @@ const amount = isInstrumentFromPortfolio
     font-size: 1.15rem;
     max-inline-size: 80px;
     text-align: center;
+  }
+
+  .hidden {
+    display: none;
   }
 </style>
