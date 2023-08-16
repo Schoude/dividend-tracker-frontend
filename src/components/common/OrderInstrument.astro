@@ -23,8 +23,6 @@ const price = formatCurrency(instrument.price_snapshot!, "EUR", "de-DE");
 const amount = isInstrumentFromPortfolio
   ? getAmountInPortfolio(portfolioResponse, instrument)
   : 0;
-
-// TODO: add date picker to select custom dates for the order!
 ---
 
 <order-instrument
@@ -41,7 +39,8 @@ const amount = isInstrumentFromPortfolio
 >
   <section class="order">
     <div class="price">
-      Preis: {price}
+      <label for="order-date" hidden>Tag der Order:</label>
+      <input class="order-date" type="date" name="order-date" id="order-date" />
     </div>
     <form class="actions">
       <button
@@ -87,8 +86,9 @@ const amount = isInstrumentFromPortfolio
     price: number;
     type: "buy" | "sell";
     instrumentType: "stock" | "fund";
-    currentAmount?: number | undefined;
-    isNew?: boolean | undefined;
+    currentAmount?: number;
+    isNew?: boolean;
+    timestamp?: number;
   }
 
   class OrderInstrument extends HTMLElement {
@@ -102,12 +102,14 @@ const amount = isInstrumentFromPortfolio
 
       const props = JSON.parse(this.dataset.props as string) as PropsClient;
       const inputAmount = this.querySelector<HTMLInputElement>(".amount");
+      const inputDate = this.querySelector<HTMLInputElement>(".order-date");
       const costsDisplay = this.querySelector<HTMLSpanElement>(".costs");
       const btnSell = this.querySelector<HTMLButtonElement>(".btn-sell");
       const btnBuy = this.querySelector<HTMLButtonElement>(".btn-buy");
 
       let amountValue = 0;
       let costs = 0;
+      let orderDate: undefined | number = undefined;
       let loading = false;
 
       inputAmount?.addEventListener("input", (e) => {
@@ -137,6 +139,13 @@ const amount = isInstrumentFromPortfolio
         }
       });
 
+      inputDate?.addEventListener("input", (e) => {
+        const target = e.target as HTMLInputElement;
+        orderDate = Number.isNaN(target.valueAsNumber)
+          ? undefined
+          : target.valueAsNumber;
+      });
+
       btnBuy?.addEventListener("click", async (e) => {
         e.preventDefault();
 
@@ -162,6 +171,7 @@ const amount = isInstrumentFromPortfolio
             price: props.price,
             amount: amountValue,
             isNew: !props.isInstrumentFromPortfolio,
+            timestamp: orderDate,
           };
 
           const res = await fetch(`${props.apiUrlBase}/api/order/buy`, {
@@ -253,6 +263,13 @@ const amount = isInstrumentFromPortfolio
     text-align: center;
     padding-block-end: 0.5em;
     font-size: 1.15rem;
+  }
+
+  .price {
+    :first-child {
+      display: inline-block;
+      margin-inline-end: 1rem;
+    }
   }
 
   .amount-current {
