@@ -1,6 +1,7 @@
 ---
 import FundDetails from "../../../../components/FundDetails.astro";
 import StockDetails from "../../../../components/StockDetails.astro";
+import OrderInstrument from "../../../../components/common/OrderInstrument.astro";
 import Layout from "../../../../layouts/Layout.astro";
 import type {
   FundFullInfo,
@@ -65,37 +66,12 @@ const recommendationsResponse = (await (
       />
       <span>{detailInstrument?.name}</span>
     </h2>
-    <section class="order">
-      <div class="price">
-        Preis: {
-          formatCurrency(detailInstrument?.price_snapshot!, "EUR", "de-DE")
-        }
-      </div>
-      <form class="actions">
-        <button
-          class="btn-order btn-sell"
-          type="button"
-          disabled={!isInstrumentFromPortfolio}>Verkaufen</button
-        >
-        <input
-          class="amount"
-          type="number"
-          name="order-amount"
-          id="order-amount"
-          min="0"
-          placeholder="0"
-          -
-        />
-        <button class="btn-order btn-buy" type="button">Kaufen</button>
-      </form>
-      <p class="amount-current">
-        Anzahl: {
-          isInstrumentFromPortfolio
-            ? getAmountInPortfolio(portfolioResponse, detailInstrument!)
-            : 0
-        }
-      </p>
-    </section>
+
+    <OrderInstrument
+      instrument={detailInstrument!}
+      portfolioResponse={portfolioResponse}
+      isInstrumentFromPortfolio={isInstrumentFromPortfolio}
+    />
 
     <section class="grid">
       {
@@ -184,61 +160,6 @@ const recommendationsResponse = (await (
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-  }
-
-  .order {
-    color: hsl(0, 0, 5%);
-    background-color: hsl(188, 90%, 11%);
-    border-radius: 2px;
-    padding: 0.55rem;
-    margin-block: 0.35rem;
-  }
-
-  .price,
-  .amount-current {
-    text-align: center;
-    padding-block-end: 0.5em;
-    font-size: 1.15rem;
-  }
-
-  .amount-current {
-    padding-block-start: 0.5em;
-    padding-block-end: 0;
-  }
-
-  .actions {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-  }
-
-  .btn-order {
-    display: block;
-    padding: 1rem;
-    flex-grow: 1;
-    font-size: 1rem;
-    text-transform: uppercase;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-  }
-
-  .btn-sell {
-    background-color: var(--red);
-    border-start-start-radius: 2px;
-    border-end-start-radius: 2px;
-  }
-
-  .btn-buy {
-    background-color: var(--green);
-    border-start-end-radius: 2px;
-    border-end-end-radius: 2px;
-  }
-
-  .amount {
-    border: none;
-    background-color: #121212;
-    font-size: 1.15rem;
-    max-inline-size: 80px;
-    text-align: center;
   }
 
   ul {
