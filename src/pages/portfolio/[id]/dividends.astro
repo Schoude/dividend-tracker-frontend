@@ -9,7 +9,7 @@ import { getLogoUrl } from "../../../utils/logos";
 const { id } = Astro.params;
 
 const SOURCE_TAX = 0.85;
-const EXCHANGE_RATE = 0.91;
+const EXCHANGE_RATE = Number(import.meta.env.VITE_EXCHANGE_RATE_USD_EUR);
 
 const {
   data: {
@@ -27,114 +27,122 @@ const {
 
 const dividendTimeline = [];
 const today = new Date();
-const year = today.getUTCFullYear();
+const yearNow = today.getUTCFullYear();
 const currentMonth = today.getMonth() + 1;
 
-for (let i = currentMonth; i <= 12; i++) {
-  const timelineMonth: {
-    year: number;
-    month: number;
-    dividendsOfMonth: DividendsMonthly;
-    totalPayout: number;
-  } = {
-    year,
-    month: i,
-    dividendsOfMonth: [],
-    totalPayout: 0,
-  };
+const years = [yearNow, yearNow + 1];
 
-  const dividendsOfMonth = stocks
-    .map((s) => {
-      return s.dividends_stock
-        .filter((d) => {
-          return d.payment_date_iso.includes(
-            `${year}-${i.toString().padStart(2, "0")}`
-          );
-        })
-        .map((d) => {
-          const validOrdersOfStock = orders
-            .filter((order) => order.isin === s.isin)
-            .filter((order) => order.timestamp < d.ex_date_unix);
+for (let index = 0; index < years.length; index++) {
+  const year = years[index];
 
-          const ownedAtPayout = validOrdersOfStock.reduce((acc, order) => {
-            acc += order.amount_changed;
-            return acc;
-          }, 0);
+  const startingMonth = year === yearNow ? currentMonth : 1;
 
-          const stockInfo = stocksStatus.find(
-            (status) => status.isin === d.isin
-          );
+  for (let i = startingMonth; i <= 12; i++) {
+    const timelineMonth: {
+      year: number;
+      month: number;
+      dividendsOfMonth: DividendsMonthly;
+      totalPayout: number;
+    } = {
+      year,
+      month: i,
+      dividendsOfMonth: [],
+      totalPayout: 0,
+    };
 
-          return {
-            ...d,
-            amountPayout: d.amount * ownedAtPayout * SOURCE_TAX * EXCHANGE_RATE,
-            instrumentInfo: stockInfo,
-            ownedAtPayout,
-          };
-        });
-    })
-    .flat();
-
-  const fundDividends =
-    funds
-      .map((f) => {
-        return f.dividends_fund
+    const dividendsOfMonth = stocks
+      .map((s) => {
+        return s.dividends_stock
           .filter((d) => {
             return d.payment_date_iso.includes(
               `${year}-${i.toString().padStart(2, "0")}`
             );
           })
           .map((d) => {
-            const validOrdersOfFund = orders
-              .filter((order) => order.isin === f.isin)
-              .filter((order) => {
-                if (order.timestamp > d.ex_date_unix) {
-                  console.log(
-                    "possibly exclude order: ",
-                    order,
-                    new Date(order.timestamp).toLocaleDateString()
-                  );
-                  console.log("ex date: ", d.ex_date_iso);
-                }
+            const validOrdersOfStock = orders
+              .filter((order) => order.isin === s.isin)
+              .filter((order) => order.timestamp < d.ex_date_unix);
 
-                return order.timestamp < d.ex_date_unix;
-              });
-
-            const ownedAtPayout = validOrdersOfFund.reduce((acc, order) => {
+            const ownedAtPayout = validOrdersOfStock.reduce((acc, order) => {
               acc += order.amount_changed;
               return acc;
             }, 0);
 
-            const fundInfo = fundsStatus.find(
+            const stockInfo = stocksStatus.find(
               (status) => status.isin === d.isin
             );
 
             return {
               ...d,
-              amountPayout: d.amount * ownedAtPayout,
-              instrumentInfo: fundInfo,
+              amountPayout: d.amount * ownedAtPayout * SOURCE_TAX * EXCHANGE_RATE,
+              instrumentInfo: stockInfo,
               ownedAtPayout,
             };
           });
       })
-      .flat() ?? [];
+      .flat();
 
-  dividendsOfMonth.push(...fundDividends);
+    const fundDividends =
+      funds
+        .map((f) => {
+          return f.dividends_fund
+            .filter((d) => {
+              return d.payment_date_iso.includes(
+                `${year}-${i.toString().padStart(2, "0")}`
+              );
+            })
+            .map((d) => {
+              const validOrdersOfFund = orders
+                .filter((order) => order.isin === f.isin)
+                .filter((order) => {
+                  if (order.timestamp > d.ex_date_unix) {
+                    console.log(
+                      "possibly exclude order: ",
+                      order,
+                      new Date(order.timestamp).toLocaleDateString()
+                    );
+                    console.log("ex date: ", d.ex_date_iso);
+                  }
 
-  timelineMonth.dividendsOfMonth = dividendsOfMonth.sort(
-    (a, b) => a.payment_date_unix - b.payment_date_unix
-  );
+                  return order.timestamp < d.ex_date_unix;
+                });
 
-  timelineMonth.totalPayout = timelineMonth.dividendsOfMonth.reduce(
-    (acc, value) => {
-      acc += value.amountPayout;
+              const ownedAtPayout = validOrdersOfFund.reduce((acc, order) => {
+                acc += order.amount_changed;
+                return acc;
+              }, 0);
 
-      return acc;
-    },
-    0
-  );
+              const fundInfo = fundsStatus.find(
+                (status) => status.isin === d.isin
+              );
 
-  dividendTimeline.push(timelineMonth);
+              return {
+                ...d,
+                amountPayout: d.amount * ownedAtPayout,
+                instrumentInfo: fundInfo,
+                ownedAtPayout,
+              };
+            });
+        })
+        .flat() ?? [];
+
+    dividendsOfMonth.push(...fundDividends);
+
+    timelineMonth.dividendsOfMonth = dividendsOfMonth.sort(
+      (a, b) => a.payment_date_unix - b.payment_date_unix
+    );
+
+    timelineMonth.totalPayout = timelineMonth.dividendsOfMonth.reduce(
+      (acc, value) => {
+        acc += value.amountPayout;
+
+        return acc;
+      },
+      0
+    );
+
+    dividendTimeline.push(timelineMonth);
+  }
 }
 ---
 
@@ -144,80 +152,83 @@ for (let i = currentMonth; i <= 12; i++) {
     <section>
       {
         dividendTimeline.map((month) => (
-          <article>
-            <h2>
-              {months.get(month.month)} {month.year}
-            </h2>
-            <h3 style="margin-block: .75rem;">
-              <span style="font-weight: 500;">
-                {formatCurrency(month.totalPayout, "EUR", "de-DE")}
-              </span>
-              <spam>in {month.dividendsOfMonth.length} Auszahlungen</spam>
-            </h3>
-            <div class="stocks">
-              {month.dividendsOfMonth.map((dividend) => (
-                <div
-                  class="stock"
-                  class:list={[{ payed: isInPast(dividend.payment_date_unix) }]}
-                >
-                  <h3>
-                    <a
-                      style="display: inline-flex; align-items: center; gap: .5rem;"
-                      href={`/portfolio/${id}/order/${dividend.instrumentInfo?.isin}`}
-                    >
-                      <img
-                        src={getLogoUrl(
-                          stocks.find(
-                            (iterStock) =>
-                              iterStock.isin === dividend.instrumentInfo?.isin
-                          )!
-                        )}
-                        alt={`Logo ${dividend.instrumentInfo?.name}`}
-                        width="35"
-                        height="35"
-                        loading="lazy"
-                      />
-                      <span class="payout">
-                        {dividend.instrumentInfo?.name}
-                      </span>
-                      <div>
-                        <span style="font-size: 1.25rem; font-weight: 500;">
-                          {formatCurrency(
-                            dividend.amountPayout,
-                            "EUR",
-                            "de-DE"
+          <>
+            <article>
+              <h2>
+                {months.get(month.month)} {month.year}
+              </h2>
+              <h3 style="margin-block: .75rem;">
+                <span style="font-weight: 500;">
+                  {formatCurrency(month.totalPayout, "EUR", "de-DE")}
+                </span>
+                <spam>in {month.dividendsOfMonth.length} Auszahlungen</spam>
+              </h3>
+              <div class="stocks">
+                {month.dividendsOfMonth.map((dividend) => (
+                  <div
+                    class="stock"
+                    class:list={[{ payed: isInPast(dividend.payment_date_unix) }]}
+                  >
+                    <h3>
+                      <a
+                        style="display: inline-flex; align-items: center; gap: .5rem;"
+                        href={`/portfolio/${id}/order/${dividend.instrumentInfo?.isin}`}
+                      >
+                        <img
+                          src={getLogoUrl(
+                            stocks.find(
+                              (iterStock) =>
+                                iterStock.isin === dividend.instrumentInfo?.isin
+                            )!
                           )}
+                          alt={`Logo ${dividend.instrumentInfo?.name}`}
+                          width="35"
+                          height="35"
+                          loading="lazy"
+                        />
+                        <span class="payout">
+                          {dividend.instrumentInfo?.name}
                         </span>
-                      </div>
-                    </a>
-                  </h3>
-                  <div class="dividend-info">
-                    <p>pro Aktie: {formatCurrency(dividend.amount)}</p>
-                    <p>Bestand: {dividend.ownedAtPayout.toFixed(2)}</p>
-                    <p>
-                      Ex-Dividende am:
-                      <br />
-                      {new Date(dividend.ex_date_iso).toLocaleDateString()}
-                    </p>
-                    <p>
-                      Auszahlung am:
-                      <br />
-                      {new Date(dividend.payment_date_iso).toLocaleDateString()}
-                    </p>
-                    <p>
-                      Anteil:
-                      {getPercentage(dividend.amountPayout, month.totalPayout)}
-                    </p>
-                    {dividend.info ? (
+                        <div>
+                          <span style="font-size: 1.25rem; font-weight: 500;">
+                            {formatCurrency(
+                              dividend.amountPayout,
+                              "EUR",
+                              "de-DE"
+                            )}
+                          </span>
+                        </div>
+                      </a>
+                    </h3>
+                    <div class="dividend-info">
+                      <p>pro Aktie: {formatCurrency(dividend.amount)}</p>
+                      <p>Bestand: {dividend.ownedAtPayout.toFixed(2)}</p>
                       <p>
-                        Info: <i>{dividend.info}</i>{" "}
+                        Ex-Dividende am:
+                        <br />
+                        {new Date(dividend.ex_date_iso).toLocaleDateString()}
                       </p>
-                    ) : null}
+                      <p>
+                        Auszahlung am:
+                        <br />
+                        {new Date(dividend.payment_date_iso).toLocaleDateString()}
+                      </p>
+                      <p>
+                        Anteil:
+                        {getPercentage(dividend.amountPayout, month.totalPayout)}
+                      </p>
+                      {dividend.info ? (
+                        <p>
+                          Info: <i>{dividend.info}</i>{" "}
+                        </p>
+                      ) : null}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </article>
+                ))}
+              </div>
+            </article>
+            {month.month === 12 ? <hr style="margin-block: 2rem;" />: null}
+          </>
         ))
       }
     </section>
