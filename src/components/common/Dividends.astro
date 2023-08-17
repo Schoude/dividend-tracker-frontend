@@ -4,16 +4,20 @@ import { isInPast } from "../../utils/date";
 import { formatCurrency } from "../../utils/intl";
 
 export interface Props {
+  dividendYield?: string;
   distribution_frequency: string;
   dividends: Dividend[];
 }
 
-const { distribution_frequency, dividends } = Astro.props;
+const { dividendYield, distribution_frequency, dividends } = Astro.props;
 ---
 
 <section class="dividends">
   <h3 class="heading">Dividenden</h3>
-  <p>Häufigkeit: {distribution_frequency}</p>
+  <div>
+    <p>Häufigkeit: {distribution_frequency}</p>
+    {dividendYield ? <p>Rendite: {dividendYield}</p> : null}
+  </div>
   <ul class="dividends-list">
     {
       dividends.map((dividend) => (
