@@ -24,11 +24,11 @@ const { distribution_frequency, dividends } = Astro.props;
           <dl>
             <dt>Betrag</dt>
             <dt>{formatCurrency(dividend.amount)}</dt>
-            <dt>EX:</dt>
+            <dt>EX</dt>
             <dd>{dividend.ex_date_iso}</dd>
-            <dt>Auszahlung:</dt>
+            <dt>Auszahlung</dt>
             <dd>{dividend.payment_date_iso}</dd>
-            <dt>Info:</dt>
+            <dt>Info</dt>
             <dd>{dividend.info}</dd>
           </dl>
         </li>

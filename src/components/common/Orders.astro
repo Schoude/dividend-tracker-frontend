@@ -1,0 +1,33 @@
+---
+import type { Order } from "../../types";
+import OrderListItem from "./OrderListItem.astro";
+export interface Props {
+  ordersOfInstrument: Order[];
+}
+
+const { ordersOfInstrument } = Astro.props;
+---
+
+<div class="orders">
+  <h3 class="heading">Orders ({ordersOfInstrument.length})</h3>
+  <ul class="orders-list">
+    {ordersOfInstrument.map((order) => <OrderListItem order={order} />)}
+  </ul>
+</div>
+
+<style>
+  .heading {
+    margin-block: 0.5rem;
+  }
+
+  .orders-list {
+    padding: 0.5rem;
+    overflow-x: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 0.5rem;
+    padding-block-end: 0.75rem;
+  }
+</style>

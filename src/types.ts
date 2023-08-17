@@ -1,4 +1,4 @@
-interface Order {
+export interface Order {
   amount_changed: number;
   id: number;
   instrument_type: string;

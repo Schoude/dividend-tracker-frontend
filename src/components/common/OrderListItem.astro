@@ -1,0 +1,45 @@
+---
+import type { Order } from "../../types";
+import { formatCurrency } from "../../utils/intl";
+
+export interface Props {
+  order: Order;
+}
+
+const { order } = Astro.props;
+---
+
+<li class="order">
+  <dl>
+    <dt>Datum</dt>
+    <dd>{new Date(order.timestamp).toLocaleDateString()}</dd>
+    <dt>Typ</dt>
+    <dd>{order.type}</dd>
+    <dt>Anzahl</dt>
+    <dd>{order.amount_changed}</dd>
+    <dt>Preis</dt>
+    <dd>{formatCurrency(order.price, "EUR", "de-DE")}</dd>
+    <dt>Betrag</dt>
+    <dd>
+      {formatCurrency(order.price * order.amount_changed, "EUR", "de-DE")}
+    </dd>
+  </dl>
+</li>
+
+<style>
+  .order {
+    min-inline-size: fit-content;
+    padding-block: 0.5rem;
+    padding-inline: 0.75rem;
+    background-color: hsl(0, 0%, 5%);
+    border: 1px solid rgb(53, 53, 53);
+    border-radius: 4px;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.75rem;
+    margin: 0;
+  }
+</style>
