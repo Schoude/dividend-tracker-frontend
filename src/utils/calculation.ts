@@ -20,9 +20,9 @@ export function getValueOfPortfolio(
   const totalValue = totalStocksValue + totalFundsValue;
 
   return {
-    totalStocksValue: formatCurrency(totalStocksValue),
-    totalFundsValue: formatCurrency(totalFundsValue),
-    totalValue: formatCurrency(totalValue)
+    totalStocksValue: formatCurrency(totalStocksValue, 'EUR', 'de-DE'),
+    totalFundsValue: formatCurrency(totalFundsValue, 'EUR', 'de-DE'),
+    totalValue: formatCurrency(totalValue, 'EUR', 'de-DE'),
   }
 }
 
