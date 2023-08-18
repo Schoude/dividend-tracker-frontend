@@ -5,37 +5,105 @@ import { formatCurrency } from "../../utils/intl";
 import IconClose from "../icons/IconClose.astro";
 
 export interface Props {
+  portfolio_id: number;
   order: Order;
 }
 
-const { order } = Astro.props;
+const { order, portfolio_id } = Astro.props;
 
 const futureOrder = isInFuture(order.timestamp);
+const apiUrlBase = import.meta.env.VITE_URL_BASE;
 ---
 
-<li class="order" class:list={{ "future-order": futureOrder }}>
-  <dl>
-    <dt>Datum</dt>
-    <dd>{new Date(order.timestamp).toLocaleDateString()}</dd>
-    <dt>Typ</dt>
-    <dd>{order.type}</dd>
-    <dt>Anzahl</dt>
-    <dd>{order.amount_changed}</dd>
-    <dt>Preis</dt>
-    <dd>{formatCurrency(order.price, "EUR", "de-DE")}</dd>
-    <dt>Betrag</dt>
-    <dd>
-      {formatCurrency(order.price * order.amount_changed, "EUR", "de-DE")}
-    </dd>
-  </dl>
-  {
-    futureOrder ? (
-      <button class="btn-delete" type="button" title="Order löschen">
-        <IconClose />
-      </button>
-    ) : null
-  }
+<li>
+  <order-list-item
+    data-props={JSON.stringify({
+      apiUrlBase,
+      orderId: order.order_id,
+      isin: order.isin,
+      portfolio_id,
+    })}
+    class="order"
+    class:list={{ "future-order": futureOrder }}
+  >
+    <dl>
+      <dt>Datum</dt>
+      <dd>{new Date(order.timestamp).toLocaleDateString()}</dd>
+      <dt>Typ</dt>
+      <dd>{order.type}</dd>
+      <dt>Anzahl</dt>
+      <dd>{order.amount_changed}</dd>
+      <dt>Preis</dt>
+      <dd>{formatCurrency(order.price, "EUR", "de-DE")}</dd>
+      <dt>Betrag</dt>
+      <dd>
+        {formatCurrency(order.price * order.amount_changed, "EUR", "de-DE")}
+      </dd>
+    </dl>
+    {
+      futureOrder ? (
+        <button class="btn-delete" type="button" title="Order löschen">
+          <IconClose />
+        </button>
+      ) : null
+    }
+  </order-list-item>
 </li>
+
+<script>
+  interface PropsClient {
+    apiUrlBase: string;
+    orderId: string;
+    isin: string;
+    portfolio_id: string;
+  }
+
+  class OrderInstrument extends HTMLElement {
+    constructor() {
+      super();
+
+      let loading = false;
+
+      const props = JSON.parse(this.dataset.props as string) as PropsClient;
+
+      const btnDelete = this.querySelector(".btn-delete");
+
+      btnDelete?.addEventListener("click", async () => {
+        if (loading) {
+          return;
+        }
+
+        loading = true;
+
+        try {
+          const res = await fetch(`${props.apiUrlBase}/api/order/delete`, {
+            method: "POST",
+            body: JSON.stringify({
+              order_id: props.orderId,
+              isin: props.isin,
+              portfolio_id: props.portfolio_id,
+            }),
+          });
+
+          if (!res.ok) {
+            console.log(res.status);
+            console.log(res.statusText);
+
+            return;
+          }
+
+          location.reload();
+        } catch (error) {
+          console.log((error as Error).message);
+        } finally {
+          loading = false;
+        }
+      });
+    }
+  }
+
+  customElements.define("order-list-item", OrderInstrument);
+</script>
 
 <style>
   .order {
@@ -45,9 +113,10 @@ const futureOrder = isInFuture(order.timestamp);
     background-color: hsl(0, 0%, 5%);
     border: 1px solid rgb(53, 53, 53);
     border-radius: 4px;
+    display: flex;
 
     &.future-order {
-      display: flex;
+      border-color: hsl(61, 100%, 23%);
     }
   }
 

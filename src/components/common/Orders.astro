@@ -2,16 +2,21 @@
 import type { Order } from "../../types";
 import OrderListItem from "./OrderListItem.astro";
 export interface Props {
+  portfolio_id: number;
   ordersOfInstrument: Order[];
 }
 
-const { ordersOfInstrument } = Astro.props;
+const { ordersOfInstrument, portfolio_id } = Astro.props;
 ---
 
 <div class="orders">
   <h3 class="heading">Orders ({ordersOfInstrument.length})</h3>
   <ul class="orders-list">
-    {ordersOfInstrument.map((order) => <OrderListItem order={order} />)}
+    {
+      ordersOfInstrument.map((order) => (
+        <OrderListItem order={order} portfolio_id={portfolio_id} />
+      ))
+    }
   </ul>
 </div>
 

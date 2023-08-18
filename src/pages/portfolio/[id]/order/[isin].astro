@@ -42,7 +42,7 @@ if (!isInstrumentFromPortfolio) {
       ) as FundFullInfo);
 }
 
-const price = formatCurrency(detailInstrument.price_snapshot!, "EUR", "de-DE");
+const price = formatCurrency(detailInstrument?.price_snapshot!, "EUR", "de-DE");
 
 const ordersOfInstrument = portfolioResponse.data.orders.filter(
   (order) => order.isin === detailInstrument?.isin
@@ -80,7 +80,10 @@ const recommendationsResponse = (await (
       isInstrumentFromPortfolio={isInstrumentFromPortfolio}
     />
 
-    <Orders ordersOfInstrument={ordersOfInstrument} />
+    <Orders
+      ordersOfInstrument={ordersOfInstrument}
+      portfolio_id={portfolioResponse.data.id}
+    />
 
     <section class="grid">
       {

@@ -24,9 +24,9 @@ export function isInPast(unixDate: number) {
 
 export function isInFuture(unixDate: number) {
   const today = new Date();
-  today.setHours(0);
-  today.setMinutes(0);
-  today.setSeconds(0);
+  today.setHours(23);
+  today.setMinutes(59);
+  today.setSeconds(59);
 
   return unixDate > today.getTime();
 }
