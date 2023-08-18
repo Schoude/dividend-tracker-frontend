@@ -1,15 +1,19 @@
 ---
 import type { Order } from "../../types";
+import { isInFuture } from "../../utils/date";
 import { formatCurrency } from "../../utils/intl";
+import IconClose from "../icons/IconClose.astro";
 
 export interface Props {
   order: Order;
 }
 
 const { order } = Astro.props;
+
+const futureOrder = isInFuture(order.timestamp);
 ---
 
-<li class="order">
+<li class="order" class:list={{ "future-order": futureOrder }}>
   <dl>
     <dt>Datum</dt>
     <dd>{new Date(order.timestamp).toLocaleDateString()}</dd>
@@ -24,16 +28,27 @@ const { order } = Astro.props;
       {formatCurrency(order.price * order.amount_changed, "EUR", "de-DE")}
     </dd>
   </dl>
+  {
+    futureOrder ? (
+      <button class="btn-delete" type="button" title="Order löschen">
+        <IconClose />
+      </button>
+    ) : null
+  }
 </li>
 
 <style>
   .order {
-    min-inline-size: fit-content;
+    min-inline-size: max-content;
     padding-block: 0.5rem;
     padding-inline: 0.75rem;
     background-color: hsl(0, 0%, 5%);
     border: 1px solid rgb(53, 53, 53);
     border-radius: 4px;
+
+    &.future-order {
+      display: flex;
+    }
   }
 
   dl {
@@ -41,5 +56,19 @@ const { order } = Astro.props;
     grid-template-columns: max-content 1fr;
     column-gap: 0.75rem;
     margin: 0;
+  }
+
+  .btn-delete {
+    border: none;
+    background: none;
+    inline-size: 2.1rem;
+    block-size: 2.1rem;
+    flex: none;
+    display: flex;
+    margin-inline-start: 0.75rem;
+
+    & svg {
+      flex: none;
+    }
   }
 </style>

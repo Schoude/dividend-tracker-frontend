@@ -21,3 +21,12 @@ export function isInPast(unixDate: number) {
 
   return unixDate < today.getTime();
 }
+
+export function isInFuture(unixDate: number) {
+  const today = new Date();
+  today.setHours(0);
+  today.setMinutes(0);
+  today.setSeconds(0);
+
+  return unixDate > today.getTime();
+}
