@@ -175,77 +175,79 @@ for (let index = 0; index < years.length; index++) {
                     <spam>in {month.dividendsOfMonth.length} Auszahlungen</spam>
                   </h3>
                   <div class="stocks">
-                    {month.dividendsOfMonth.map((dividend) => (
-                      <div
-                        class="stock"
-                        class:list={[
-                          { payed: isInPast(dividend.payment_date_unix) },
-                        ]}
-                      >
-                        <h3>
-                          <a
-                            style="display: inline-flex; align-items: center; gap: .5rem;"
-                            href={`/portfolio/${id}/order/${dividend.instrumentInfo?.isin}`}
-                          >
-                            <img
-                              src={getLogoUrl(
-                                stocks.find(
-                                  (iterStock) =>
-                                    iterStock.isin ===
-                                    dividend.instrumentInfo?.isin
-                                )!
-                              )}
-                              alt={`Logo ${dividend.instrumentInfo?.name}`}
-                              width="35"
-                              height="35"
-                              loading="lazy"
-                            />
-                            <span class="payout">
-                              {dividend.instrumentInfo?.name}
-                            </span>
-                            <div>
-                              <span style="font-size: 1.25rem; font-weight: 500;">
-                                {formatCurrency(
-                                  dividend.amountPayout,
-                                  "EUR",
-                                  "de-DE"
+                    {month.dividendsOfMonth
+                      .filter((dividend) => dividend.amountPayout > 0)
+                      .map((dividend) => (
+                        <div
+                          class="stock"
+                          class:list={[
+                            { payed: isInPast(dividend.payment_date_unix) },
+                          ]}
+                        >
+                          <h3>
+                            <a
+                              style="display: inline-flex; align-items: center; gap: .5rem;"
+                              href={`/portfolio/${id}/order/${dividend.instrumentInfo?.isin}`}
+                            >
+                              <img
+                                src={getLogoUrl(
+                                  stocks.find(
+                                    (iterStock) =>
+                                      iterStock.isin ===
+                                      dividend.instrumentInfo?.isin
+                                  )!
                                 )}
+                                alt={`Logo ${dividend.instrumentInfo?.name}`}
+                                width="35"
+                                height="35"
+                                loading="lazy"
+                              />
+                              <span class="payout">
+                                {dividend.instrumentInfo?.name}
                               </span>
-                            </div>
-                          </a>
-                        </h3>
-                        <div class="dividend-info">
-                          <p>pro Aktie: {formatCurrency(dividend.amount)}</p>
-                          <p>Bestand: {dividend.ownedAtPayout.toFixed(2)}</p>
-                          <p>
-                            Ex-Dividende am:
-                            <br />
-                            {new Date(
-                              dividend.ex_date_iso
-                            ).toLocaleDateString()}
-                          </p>
-                          <p>
-                            Auszahlung am:
-                            <br />
-                            {new Date(
-                              dividend.payment_date_iso
-                            ).toLocaleDateString()}
-                          </p>
-                          <p>
-                            Anteil:
-                            {getPercentage(
-                              dividend.amountPayout,
-                              month.totalPayout
-                            )}
-                          </p>
-                          {dividend.info ? (
+                              <div>
+                                <span style="font-size: 1.25rem; font-weight: 500;">
+                                  {formatCurrency(
+                                    dividend.amountPayout,
+                                    "EUR",
+                                    "de-DE"
+                                  )}
+                                </span>
+                              </div>
+                            </a>
+                          </h3>
+                          <div class="dividend-info">
+                            <p>pro Aktie: {formatCurrency(dividend.amount)}</p>
+                            <p>Bestand: {dividend.ownedAtPayout.toFixed(2)}</p>
                             <p>
-                              Info: <i>{dividend.info}</i>{" "}
+                              Ex-Dividende am:
+                              <br />
+                              {new Date(
+                                dividend.ex_date_iso
+                              ).toLocaleDateString()}
                             </p>
-                          ) : null}
+                            <p>
+                              Auszahlung am:
+                              <br />
+                              {new Date(
+                                dividend.payment_date_iso
+                              ).toLocaleDateString()}
+                            </p>
+                            <p>
+                              Anteil:
+                              {getPercentage(
+                                dividend.amountPayout,
+                                month.totalPayout
+                              )}
+                            </p>
+                            {dividend.info ? (
+                              <p>
+                                Info: <i>{dividend.info}</i>{" "}
+                              </p>
+                            ) : null}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </article>
                 {month.month === 12 ? <hr style="margin-block: 2rem;" /> : null}

@@ -40,13 +40,9 @@ const apiUrlBase = import.meta.env.VITE_URL_BASE;
         {formatCurrency(order.price * order.amount_changed, "EUR", "de-DE")}
       </dd>
     </dl>
-    {
-      futureOrder ? (
-        <button class="btn-delete" type="button" title="Order löschen">
-          <IconClose />
-        </button>
-      ) : null
-    }
+    <button class="btn-delete" type="button" title="Order löschen">
+      <IconClose />
+    </button>
   </order-list-item>
 </li>
 
