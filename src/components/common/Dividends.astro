@@ -33,7 +33,17 @@ const { dividendYield, distribution_frequency, dividends } = Astro.props;
             <dt>Auszahlung</dt>
             <dd>{dividend.payment_date_iso}</dd>
             <dt>Info</dt>
-            <dd>{dividend.info}</dd>
+            <dd
+              class:list={[
+                dividend.info?.includes("-")
+                  ? "reduction"
+                  : dividend.info?.includes("%")
+                  ? "raise"
+                  : null,
+              ]}
+            >
+              {dividend.info}
+            </dd>
           </dl>
         </li>
       ))
@@ -84,5 +94,13 @@ const { dividendYield, distribution_frequency, dividends } = Astro.props;
   dd {
     margin: 0;
     font-weight: 200;
+  }
+
+  .reduction {
+    color: var(--red);
+  }
+
+  .raise {
+    color: var(--green);
   }
 </style>

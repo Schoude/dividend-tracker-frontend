@@ -247,7 +247,18 @@ for (let index = 0; index < years.length; index++) {
                             </p>
                             {dividend.info ? (
                               <p>
-                                Info: <i>{dividend.info}</i>{" "}
+                                Info:{" "}
+                                <i
+                                  class:list={[
+                                    dividend.info.includes("-")
+                                      ? "reduction"
+                                      : dividend.info.includes("%")
+                                      ? "raise"
+                                      : null,
+                                  ]}
+                                >
+                                  {dividend.info}
+                                </i>{" "}
                               </p>
                             ) : null}
                           </div>
@@ -328,5 +339,13 @@ for (let index = 0; index < years.length; index++) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
+  }
+
+  .reduction {
+    color: var(--red);
+  }
+
+  .raise {
+    color: var(--green);
   }
 </style>
