@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
-
 import deno from "@astrojs/deno";
+import vue from "@astrojs/vue";
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,5 +8,6 @@ export default defineConfig({
     viewTransitions: true
   },
   output: "server",
-  adapter: deno()
+  adapter: deno(),
+  integrations: [vue()]
 });
