@@ -9,6 +9,11 @@ const { data } = (await (
 ---
 
 <Layout title="Deine Portfolios">
+  <header>
+    <nav>
+      <a href="/refresh">Daten aktualisieren</a>
+    </nav>
+  </header>
   <main>
     <h1>Deine Portfolios</h1>
     {data.map((p) => <a href={`/portfolio/${p.id}/detail`}>{p.name}</a>)}
