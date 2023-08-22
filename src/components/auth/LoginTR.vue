@@ -63,7 +63,7 @@ async function on2faPinSend() {
     <form v-if="show2FAInput && loginData2fa.processId" @submit.prevent="on2faPinSend">
       <label for="pin">
         <span>2FA-Pin</span>
-        <input type="number" name="pin" id="pin" v-model="pin" min="0" max="4" placeholder="1234">
+        <input type="number" name="pin" id="pin" v-model="pin" minlength="0" maxlength="4" placeholder="1234">
       </label>
       <button type="submit" class="btn">Send PIN</button>
     </form>

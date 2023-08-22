@@ -27,7 +27,7 @@ export interface StockFullInfo {
   name: string;
   price_snapshot: number;
   ipo_date: number;
-  type_id: 'stock';
+  type_id: "stock";
   exchange_id: string;
   image_id: string;
   distribution_frequency: string;
@@ -79,7 +79,7 @@ export interface PortfolioDetailResponse {
     stocksStatus: StocksStatus;
     fundsStatus: FundsStatus;
     orders: Orders;
-  }
+  };
 }
 
 export interface AnalystRatings {

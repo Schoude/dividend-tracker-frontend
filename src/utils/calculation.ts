@@ -1,9 +1,15 @@
-import type { FundFullInfo, FundsStatus, PortfolioDetailResponse, StockFullInfo, StocksStatus } from '../types';
-import { formatCurrency } from './intl';
+import type {
+  FundFullInfo,
+  FundsStatus,
+  PortfolioDetailResponse,
+  StockFullInfo,
+  StocksStatus,
+} from "../types";
+import { formatCurrency } from "./intl";
 
 export function getValueOfPortfolio(
   stocksStatus: StocksStatus,
-  fundsStatus: FundsStatus
+  fundsStatus: FundsStatus,
 ) {
   const totalStocksValue = stocksStatus.reduce((acc, stock) => {
     acc += stock.currentValue;
@@ -20,10 +26,10 @@ export function getValueOfPortfolio(
   const totalValue = totalStocksValue + totalFundsValue;
 
   return {
-    totalStocksValue: formatCurrency(totalStocksValue, 'EUR', 'de-DE'),
-    totalFundsValue: formatCurrency(totalFundsValue, 'EUR', 'de-DE'),
-    totalValue: formatCurrency(totalValue, 'EUR', 'de-DE'),
-  }
+    totalStocksValue: formatCurrency(totalStocksValue, "EUR", "de-DE"),
+    totalFundsValue: formatCurrency(totalFundsValue, "EUR", "de-DE"),
+    totalValue: formatCurrency(totalValue, "EUR", "de-DE"),
+  };
 }
 
 export function getPercentage(value1: number, value2: number) {
@@ -32,16 +38,16 @@ export function getPercentage(value1: number, value2: number) {
 
 export function getAmountInPortfolio(
   portfolio: PortfolioDetailResponse,
-  instrument: StockFullInfo | FundFullInfo
+  instrument: StockFullInfo | FundFullInfo,
 ) {
   let amount = 0;
   if (instrument.type_id === "stock") {
     amount = portfolio.data.stocksStatus.find(
-      (stock) => stock.isin === instrument.isin
+      (stock) => stock.isin === instrument.isin,
     )?.totalAmount!;
   } else {
     amount = portfolio.data.fundsStatus.find(
-      (fund) => fund.isin === instrument.isin
+      (fund) => fund.isin === instrument.isin,
     )?.totalAmount!;
   }
 
