@@ -3,12 +3,17 @@ import { onBeforeMount, reactive, ref } from 'vue';
 
 const props = defineProps<{urlBase: string}>();
 const pin = ref('');
-const show2FAInput = ref(false);
+const show2FAInput = ref(true);
 const loginData2fa = reactive({
   processId: '',
   loginCookies: '',
 });
 const trSession = ref('');
+
+function onInput($event: Event) {
+  const target = $event.target as HTMLInputElement ;
+  pin.value = target.value;
+}
 
 onBeforeMount(async () => {
   const res = await fetch(`${props.urlBase}/api/tr/login`);
@@ -63,7 +68,7 @@ async function on2faPinSend() {
     <form v-if="show2FAInput && loginData2fa.processId" @submit.prevent="on2faPinSend">
       <label for="pin">
         <span>2FA-Pin</span>
-        <input type="number" name="pin" id="pin" v-model="pin" minlength="0" maxlength="4" placeholder="1234">
+        <input type="number" name="pin" id="pin" :value="pin" @input="onInput" minlength="0" maxlength="4" placeholder="1234">
       </label>
       <button type="submit" class="btn">Send PIN</button>
     </form>
