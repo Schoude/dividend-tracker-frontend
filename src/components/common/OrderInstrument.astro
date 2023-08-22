@@ -123,6 +123,8 @@ const amount = isInstrumentFromPortfolio
           props.isInstrumentFromPortfolio
         ) {
           btnSell!.disabled = true;
+        } else if (!props.isInstrumentFromPortfolio) {
+          btnSell!.disabled = true;
         } else {
           btnSell!.disabled = false;
         }
