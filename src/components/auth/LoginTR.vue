@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { onBeforeMount, reactive, ref } from 'vue';
+import { onBeforeMount, reactive, ref, watch, watchEffect } from 'vue';
 
 const props = defineProps<{urlBase: string}>();
 const pin = ref('');
@@ -8,12 +8,20 @@ const loginData2fa = reactive({
   processId: '',
   loginCookies: '',
 });
-const trSession = ref('');
+const trSession = ref<null | string>(null);
 
 function onInput($event: Event) {
   const target = $event.target as HTMLInputElement ;
   pin.value = target.value;
 }
+
+watch(trSession,(sessionKey) => {
+  if (sessionKey) {
+    localStorage.setItem('tr_session', sessionKey);
+  } else {
+    localStorage.removeItem('tr_session');
+  }
+})
 
 onBeforeMount(async () => {
   const res = await fetch(`${props.urlBase}/api/tr/login`);
@@ -28,6 +36,8 @@ onBeforeMount(async () => {
     };
     loginData2fa.processId= json.data.processId;
     loginData2fa.loginCookies= json.data.loginCookies;
+
+    trSession.value = null;
   }
 })
 
