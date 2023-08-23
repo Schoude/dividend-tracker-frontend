@@ -11,10 +11,12 @@ const refreshing = ref(false);
 provide(keyTRSession, trSession);
 provide(keyRefreshing, refreshing);
 
+// TODO: add useRefreshData composition function -> define each function to call there
+
 </script>
 
 <template>
-  <LoginTR v-if="trSession == null" :url-base="urlBase" />
+  <LoginTR :url-base="urlBase" />
 
   <section class="container-refresh stocks">
     <h2>Aktien</h2>
