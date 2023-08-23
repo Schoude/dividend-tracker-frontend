@@ -27,7 +27,7 @@ watch(trSession, (sessionKey) => {
 
 onBeforeMount(async () => {
   if (trSession.value != null) {
-    console.log('session already there');
+    console.info('tr_session already present.');
 
     return;
   }
