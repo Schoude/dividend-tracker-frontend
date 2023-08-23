@@ -1,5 +1,6 @@
 <script setup lang='ts'>
-import { onBeforeMount, reactive, ref, watch, watchEffect } from 'vue';
+import { inject, onBeforeMount, reactive, ref, watch } from 'vue';
+import { keyTRSession } from '../../utils/provide-keys';
 
 const props = defineProps<{urlBase: string}>();
 const pin = ref('');
@@ -8,14 +9,15 @@ const loginData2fa = reactive({
   processId: '',
   loginCookies: '',
 });
-const trSession = ref<null | string>(null);
+
+const trSession = inject(keyTRSession)!;
 
 function onInput($event: Event) {
   const target = $event.target as HTMLInputElement ;
   pin.value = target.value;
 }
 
-watch(trSession,(sessionKey) => {
+watch(trSession, (sessionKey) => {
   if (sessionKey) {
     localStorage.setItem('tr_session', sessionKey);
   } else {
@@ -24,6 +26,12 @@ watch(trSession,(sessionKey) => {
 })
 
 onBeforeMount(async () => {
+  if (trSession.value != null) {
+    console.log('session already there');
+
+    return;
+  }
+
   const res = await fetch(`${props.urlBase}/api/tr/login`);
 
   if (!res.ok) {
