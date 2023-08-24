@@ -1,23 +1,27 @@
 export function useDataRefresh() {
-  async function stocksRefresh() {
+  async function stocksRefresh(): Promise<Response> {
     console.log('stocksRefresh called');
+    return new Response();
   }
 
-  async function stocksDividendsRefresh() {
+  async function stocksDividendsRefresh(): Promise<Response> {
     console.log('stocksDividendsRefresh called');
+    return new Response();
   }
 
-  async function fundsRefresh() {
+  async function fundsRefresh(): Promise<Response> {
     console.log('fundsRefresh called');
+    return new Response();
   }
 
-  async function fundsDividendsRefresh() {
+  async function fundsDividendsRefresh(): Promise<Response> {
     console.log('fundsDividendsRefresh called');
+    return new Response();
   }
 
-  async function watchlistSync() {
+  async function watchlistSync(): Promise<Response> {
     console.log('watchlistSync called');
-
+    return new Response();
   }
 
   return {

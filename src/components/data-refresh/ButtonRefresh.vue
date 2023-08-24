@@ -2,8 +2,12 @@
 import { inject } from 'vue';
 import { keyRefreshing } from '../../utils/provide-keys';
 
+const emit = defineEmits<{
+  (event: 'error:auth'): void
+}>();
+
 const props = defineProps<{
-  updateFunction: () => Promise<void>;
+  updateFunction: () => Promise<Response>;
 }>();
 const refreshing = inject(keyRefreshing)!;
 
@@ -15,10 +19,15 @@ async function onUpdateStocksClick() {
   refreshing.value = true;
 
   try {
-    await props.updateFunction();
+    const res = await props.updateFunction();
+
+    if (!res.ok) {
+      if (res.status === 401) {
+        emit('error:auth')
+      }
+    }
   } catch (error) {
     console.log(error);
-
   } finally {
     refreshing.value = false;
   }

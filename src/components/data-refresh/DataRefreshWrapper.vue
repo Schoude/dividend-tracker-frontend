@@ -21,6 +21,10 @@ const {
   watchlistSync,
 } = useDataRefresh();
 
+function onAuthError () {
+  trSession.value = null;
+}
+
 </script>
 
 <template>
@@ -29,10 +33,16 @@ const {
   <section class="container-refresh stocks">
     <h2>Aktien</h2>
     <div class="inner">
-      <ButtonRefresh :update-function="stocksRefresh">
+      <ButtonRefresh
+        :update-function="stocksRefresh"
+        @error:auth="onAuthError"
+      >
         Aktien aktualisieren
       </ButtonRefresh>
-      <ButtonRefresh :update-function="stocksDividendsRefresh">
+      <ButtonRefresh
+        :update-function="stocksDividendsRefresh"
+        @error:auth="onAuthError"
+      >
         Aktien-Dividenden aktualisieren
       </ButtonRefresh>
     </div>
@@ -41,10 +51,16 @@ const {
   <section class="container-refresh funds">
     <h2>ETFs</h2>
     <div class="inner">
-      <ButtonRefresh :update-function="fundsRefresh">
+      <ButtonRefresh
+        :update-function="fundsRefresh"
+        @error:auth="onAuthError"
+      >
         ETF aktualisieren
       </ButtonRefresh>
-      <ButtonRefresh :update-function="fundsDividendsRefresh">
+      <ButtonRefresh
+        :update-function="fundsDividendsRefresh"
+        @error:auth="onAuthError"
+      >
         ETF-Dividenden aktualisieren
       </ButtonRefresh>
     </div>
@@ -53,7 +69,10 @@ const {
   <section class="container-refresh sync">
     <h2>TR-Watchlist</h2>
     <div class="inner">
-      <ButtonRefresh :update-function="watchlistSync">
+      <ButtonRefresh
+        :update-function="watchlistSync"
+        @error:auth="onAuthError"
+      >
         Watchlist synchronisieren
       </ButtonRefresh>
     </div>
