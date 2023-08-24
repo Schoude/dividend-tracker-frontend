@@ -29,7 +29,18 @@ const { stock } = Astro.props;
     <dt>Land</dt>
     <dd>{stock.company_infos.countrycode}</dd>
     <dt>Marktkapitalisierung</dt>
-    <dd>{stock.company_infos.marketcapsnapshot}</dd>
+    <dd>
+      {
+        stock.company_infos.marketcapsnapshot
+          ? formatCurrency(
+              stock.company_infos.marketcapsnapshot,
+              "USD",
+              "en-US",
+              "compact"
+            )
+          : null
+      }
+    </dd>
   </dl>
 </section>
 
