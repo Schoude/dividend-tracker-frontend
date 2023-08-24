@@ -8,11 +8,20 @@ const props = defineProps<{
 const refreshing = inject(keyRefreshing)!;
 
 async function onUpdateStocksClick() {
-  if (refreshing?.value) {
+  if (refreshing.value) {
     return;
   }
 
-  props.updateFunction();
+  refreshing.value = true;
+
+  try {
+    await props.updateFunction();
+  } catch (error) {
+    console.log(error);
+
+  } finally {
+    refreshing.value = false;
+  }
 }
 </script>
 
