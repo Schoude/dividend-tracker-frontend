@@ -53,7 +53,7 @@ async function onUpdateStocksClick() {
   transition: background-color 260ms ease-out;
   padding: .25rem .65rem;
 
-  &:hover {
+  &:not(:disabled):hover {
     background-color: hsl(0, 0%, 7%);
   }
 }
