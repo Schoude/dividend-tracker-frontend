@@ -5,21 +5,21 @@ import ButtonRefresh from "./ButtonRefresh.vue";
 import {keyRefreshing, keyTRSession} from '../../utils/provide-keys';
 import {useDataRefresh} from '../../composables/data-refresh';
 
-defineProps<{urlBase: string}>();
+const props = defineProps<{urlBase: string}>();
 const trSession = ref<null | string>(localStorage.getItem('tr_session'));
 const refreshing = ref(false);
 
 provide(keyTRSession, trSession);
 provide(keyRefreshing, refreshing);
 
-// TODO: add useRefreshData composition function -> define each function to call there
 const {
-  stocksRefresh,
+  stocksPriceRefresh,
+  stocksInfoRefresh,
   stocksDividendsRefresh,
   fundsDividendsRefresh,
-  fundsRefresh,
+  fundsPriceRefresh,
   watchlistSync,
-} = useDataRefresh();
+} = useDataRefresh(props.urlBase);
 
 function onAuthError () {
   trSession.value = null;
@@ -34,10 +34,16 @@ function onAuthError () {
     <h2>Aktien</h2>
     <div class="inner">
       <ButtonRefresh
-        :update-function="stocksRefresh"
+        :update-function="stocksPriceRefresh"
         @error:auth="onAuthError"
       >
-        Aktien aktualisieren
+        Aktien-Preise aktualisieren
+      </ButtonRefresh>
+      <ButtonRefresh
+        :update-function="stocksInfoRefresh"
+        @error:auth="onAuthError"
+      >
+        Aktien-Infos aktualisieren
       </ButtonRefresh>
       <ButtonRefresh
         :update-function="stocksDividendsRefresh"
@@ -52,10 +58,10 @@ function onAuthError () {
     <h2>ETFs</h2>
     <div class="inner">
       <ButtonRefresh
-        :update-function="fundsRefresh"
+        :update-function="fundsPriceRefresh"
         @error:auth="onAuthError"
       >
-        ETF aktualisieren
+        ETF Preise aktualisieren
       </ButtonRefresh>
       <ButtonRefresh
         :update-function="fundsDividendsRefresh"

@@ -1,33 +1,65 @@
-export function useDataRefresh() {
-  async function stocksRefresh(): Promise<Response> {
-    console.log('stocksRefresh called');
-    return new Response();
+export function useDataRefresh(urlBase: string) {
+  async function stocksPriceRefresh(): Promise<Response | void> {
+    try {
+      return fetch(`${urlBase}/api/refresh/prices?type=stocks`);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async function stocksDividendsRefresh(): Promise<Response> {
+  async function stocksInfoRefresh(): Promise<Response | void> {
+    console.log('stocksInfoRefresh called');
+
+    try {
+      return fetch(`${urlBase}/api`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function stocksDividendsRefresh(): Promise<Response | void> {
     console.log('stocksDividendsRefresh called');
-    return new Response();
+
+    try {
+      return fetch(`${urlBase}/api`);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async function fundsRefresh(): Promise<Response> {
-    console.log('fundsRefresh called');
-    return new Response();
+  async function fundsPriceRefresh(): Promise<Response | void> {
+    try {
+      return fetch(`${urlBase}/api/refresh/prices?type=funds`);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async function fundsDividendsRefresh(): Promise<Response> {
+  async function fundsDividendsRefresh(): Promise<Response | void> {
     console.log('fundsDividendsRefresh called');
-    return new Response();
+
+    try {
+      return fetch(`${urlBase}/api`);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async function watchlistSync(): Promise<Response> {
+  async function watchlistSync(): Promise<Response | void> {
     console.log('watchlistSync called');
-    return new Response();
+
+    try {
+      return fetch(`${urlBase}/api`);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return {
-    stocksRefresh,
+    stocksPriceRefresh,
+    stocksInfoRefresh,
     stocksDividendsRefresh,
-    fundsRefresh,
+    fundsPriceRefresh,
     fundsDividendsRefresh,
     watchlistSync,
   }

@@ -7,7 +7,7 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-  updateFunction: () => Promise<Response>;
+  updateFunction: () => Promise<Response| void>;
 }>();
 const refreshing = inject(keyRefreshing)!;
 
@@ -21,7 +21,11 @@ async function onUpdateStocksClick() {
   try {
     const res = await props.updateFunction();
 
-    if (!res.ok) {
+    if (
+      typeof res === 'object' &&
+      'ok' in res &&
+      !res.ok
+    ) {
       if (res.status === 401) {
         emit('error:auth')
       }
