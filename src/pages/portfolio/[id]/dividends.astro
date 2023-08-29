@@ -3,7 +3,11 @@ import { formatCurrency } from "../../../utils/intl";
 import Layout from "../../../layouts/Layout.astro";
 import { isInPast, months } from "../../../utils/date";
 import { getPercentage } from "../../../utils/calculation";
-import type { DividendsMonthly, PortfolioDetailResponse } from "../../../types";
+import type {
+  DividendsMonthly,
+  ExchangeRatesResponse,
+  PortfolioDetailResponse,
+} from "../../../types";
 import { getLogoUrl } from "../../../utils/logos";
 
 interface TimelineMonth {
@@ -16,7 +20,6 @@ interface TimelineMonth {
 const { id } = Astro.params;
 
 const SOURCE_TAX = 0.85;
-const EXCHANGE_RATE = Number(import.meta.env.VITE_EXCHANGE_RATE_USD_EUR);
 
 const {
   data: {
@@ -31,6 +34,11 @@ const {
 } = (await (
   await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolio/${id}/detail`)
 ).json()) as PortfolioDetailResponse;
+const {
+  data: { usd_eur },
+} = (await (
+  await fetch(`${import.meta.env.VITE_URL_BASE}/api/exchange-rates`)
+).json()) as ExchangeRatesResponse;
 
 const dividendTimeline: TimelineMonth[] = [];
 const today = new Date();
@@ -81,8 +89,7 @@ for (let index = 0; index < years.length; index++) {
 
             return {
               ...d,
-              amountPayout:
-                d.amount * ownedAtPayout * SOURCE_TAX * EXCHANGE_RATE,
+              amountPayout: d.amount * ownedAtPayout * SOURCE_TAX * usd_eur,
               instrumentInfo: stockInfo,
               ownedAtPayout,
             };

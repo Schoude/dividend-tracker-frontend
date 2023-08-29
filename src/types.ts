@@ -134,3 +134,11 @@ export interface FundFullInfo {
   dividends_fund: Dividend[];
   sectors: Sector[];
 }
+
+export interface ExchangeRatesResponse {
+  data: {
+    usd_eur: number;
+    eur_usd: number;
+    updated_at: string;
+  }
+}
