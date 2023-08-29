@@ -9,6 +9,7 @@ import type {
   PortfolioDetailResponse,
 } from "../../../types";
 import { getLogoUrl } from "../../../utils/logos";
+import { isFulfilled, isRejected } from "../../../utils/type-guards";
 
 interface TimelineMonth {
   year: number;
@@ -21,6 +22,24 @@ const { id } = Astro.params;
 
 const SOURCE_TAX = 0.85;
 
+const data = await Promise.allSettled([
+  (
+    await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolio/${id}/detail`)
+  ).json(),
+  (await fetch(`${import.meta.env.VITE_URL_BASE}/api/exchange-rates`)).json(),
+]);
+
+const rejectedReponses = data.filter(isRejected);
+rejectedReponses.forEach((res) => {
+  console.error(res.reason);
+});
+
+const fulfilledReponse = data.filter(isFulfilled).map((res) => res.value);
+const [responsePortfolio, responseExchangeRates] = fulfilledReponse as [
+  PortfolioDetailResponse,
+  ExchangeRatesResponse
+];
+
 const {
   data: {
     id: portfolioId,
@@ -31,14 +50,10 @@ const {
     fundsStatus,
     orders,
   },
-} = (await (
-  await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolio/${id}/detail`)
-).json()) as PortfolioDetailResponse;
+} = responsePortfolio;
 const {
   data: { usd_eur },
-} = (await (
-  await fetch(`${import.meta.env.VITE_URL_BASE}/api/exchange-rates`)
-).json()) as ExchangeRatesResponse;
+} = responseExchangeRates;
 
 const dividendTimeline: TimelineMonth[] = [];
 const today = new Date();
