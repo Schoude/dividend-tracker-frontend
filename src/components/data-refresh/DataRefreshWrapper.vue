@@ -1,13 +1,17 @@
 <script setup lang='ts'>
-import { provide, ref } from 'vue';
+import { onBeforeMount, provide, ref } from 'vue';
 import LoginTR from '../auth/LoginTR.vue';
 import ButtonRefresh from "./ButtonRefresh.vue";
 import {keyRefreshing, keyTRSession} from '../../utils/provide-keys';
 import {useDataRefresh} from '../../composables/data-refresh';
 
 const props = defineProps<{urlBase: string}>();
-const trSession = ref<null | string>(localStorage.getItem('tr_session'));
+const trSession = ref<null | string>(null);
 const refreshing = ref(false);
+
+onBeforeMount(() => {
+  trSession.value = localStorage.getItem('tr_session');
+})
 
 provide(keyTRSession, trSession);
 provide(keyRefreshing, refreshing);

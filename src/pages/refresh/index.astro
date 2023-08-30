@@ -11,6 +11,6 @@ import Layout from "../../layouts/Layout.astro";
   </header>
   <main>
     <h1>Instrumente oder Dividenden aktualisieren</h1>
-    <DataRefreshWrapper client:only urlBase={import.meta.env.VITE_URL_BASE} />
+    <DataRefreshWrapper client:load urlBase={import.meta.env.VITE_URL_BASE} />
   </main>
 </Layout>
