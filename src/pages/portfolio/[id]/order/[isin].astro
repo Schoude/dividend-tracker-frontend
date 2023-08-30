@@ -32,25 +32,25 @@ if (!isInstrumentFromPortfolio) {
   detailInstrument = data;
 } else {
   detailInstrument = portfolioResponse.data.stocks.some(
-    (stock) => stock.isin === isin
+    (stock) => stock.isin === isin,
   )
     ? (portfolioResponse.data.stocks.find(
-        (stock) => stock.isin === isin
+        (stock) => stock.isin === isin,
       ) as StockFullInfo)
     : (portfolioResponse.data.funds.find(
-        (fund) => fund.isin === isin
+        (fund) => fund.isin === isin,
       ) as FundFullInfo);
 }
 
 const price = formatCurrency(detailInstrument?.price_snapshot!, "EUR", "de-DE");
 
 const ordersOfInstrument = portfolioResponse.data.orders.filter(
-  (order) => order.isin === detailInstrument?.isin
+  (order) => order.isin === detailInstrument?.isin,
 );
 
 const recommendationsResponse = (await (
   await fetch(
-    `${import.meta.env.VITE_URL_BASE}/api/instruments/recommendations/${isin}`
+    `${import.meta.env.VITE_URL_BASE}/api/instruments/recommendations/${isin}`,
   )
 ).json()) as { data: { stocks: StockFullInfo[]; funds: FundFullInfo[] } };
 ---
@@ -69,6 +69,8 @@ const recommendationsResponse = (await (
     </h1>
     <h2 class="name-instrument" title={detailInstrument?.name}>
       <img
+        transition:name={detailInstrument?.isin}
+        transition:animate="initial"
         src={getLogoUrl(detailInstrument!)}
         alt={`Logo ${detailInstrument?.name}`}
         width="40"

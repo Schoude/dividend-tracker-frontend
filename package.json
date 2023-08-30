@@ -9,9 +9,9 @@
     "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs"
   },
   "dependencies": {
-    "@astrojs/deno": "^4.3.0",
-    "@astrojs/vue": "^2.2.1",
-    "astro": "^2.10.15",
+    "@astrojs/deno": "^5.0.0",
+    "@astrojs/vue": "^3.0.0",
+    "astro": "^3.0.2",
     "vue": "^3.3.4"
   }
 }

@@ -18,6 +18,8 @@ const { portfolioId, instrument, logoUrl } = Astro.props;
       href={`/portfolio/${portfolioId}/order/${instrument.isin}`}
     >
       <img
+        transition:name={instrument.isin}
+        transition:animate="initial"
         src={logoUrl}
         alt={`Logo ${instrument.name}`}
         width="40"

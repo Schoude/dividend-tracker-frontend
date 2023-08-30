@@ -13,7 +13,7 @@ const { data } = (await (
 
 const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
   data.stocksStatus,
-  data.fundsStatus
+  data.fundsStatus,
 );
 ---
 
@@ -51,8 +51,8 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                       instrument={stock}
                       logoUrl={getLogoUrl(
                         data.stocks.find(
-                          (iterStock) => iterStock.isin === stock.isin
-                        )!
+                          (iterStock) => iterStock.isin === stock.isin,
+                        )!,
                       )}
                     />
                   </li>
@@ -72,8 +72,8 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
                       instrument={fund}
                       logoUrl={getLogoUrl(
                         data.funds.find(
-                          (iterFund) => iterFund.isin === fund.isin
-                        )!
+                          (iterFund) => iterFund.isin === fund.isin,
+                        )!,
                       )}
                     />
                   </li>

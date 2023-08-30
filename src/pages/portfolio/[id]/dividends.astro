@@ -37,7 +37,7 @@ rejectedReponses.forEach((res) => {
 const fulfilledReponse = data.filter(isFulfilled).map((res) => res.value);
 const [responsePortfolio, responseExchangeRates] = fulfilledReponse as [
   PortfolioDetailResponse,
-  ExchangeRatesResponse
+  ExchangeRatesResponse,
 ];
 
 const {
@@ -85,7 +85,7 @@ for (let index = 0; index < years.length; index++) {
         return s.dividends_stock
           .filter((d) => {
             return d.payment_date_iso.includes(
-              `${year}-${i.toString().padStart(2, "0")}`
+              `${year}-${i.toString().padStart(2, "0")}`,
             );
           })
           .map((d) => {
@@ -99,7 +99,7 @@ for (let index = 0; index < years.length; index++) {
             }, 0);
 
             const stockInfo = stocksStatus.find(
-              (status) => status.isin === d.isin
+              (status) => status.isin === d.isin,
             );
 
             return {
@@ -118,7 +118,7 @@ for (let index = 0; index < years.length; index++) {
           return f.dividends_fund
             .filter((d) => {
               return d.payment_date_iso.includes(
-                `${year}-${i.toString().padStart(2, "0")}`
+                `${year}-${i.toString().padStart(2, "0")}`,
               );
             })
             .map((d) => {
@@ -129,7 +129,7 @@ for (let index = 0; index < years.length; index++) {
                     console.log(
                       "possibly exclude order: ",
                       order,
-                      new Date(order.timestamp).toLocaleDateString()
+                      new Date(order.timestamp).toLocaleDateString(),
                     );
                     console.log("ex date: ", d.ex_date_iso);
                   }
@@ -143,7 +143,7 @@ for (let index = 0; index < years.length; index++) {
               }, 0);
 
               const fundInfo = fundsStatus.find(
-                (status) => status.isin === d.isin
+                (status) => status.isin === d.isin,
               );
 
               return {
@@ -159,7 +159,7 @@ for (let index = 0; index < years.length; index++) {
     dividendsOfMonth.push(...fundDividends);
 
     timelineMonth.dividendsOfMonth = dividendsOfMonth.sort(
-      (a, b) => a.payment_date_unix - b.payment_date_unix
+      (a, b) => a.payment_date_unix - b.payment_date_unix,
     );
 
     timelineMonth.totalPayout = timelineMonth.dividendsOfMonth.reduce(
@@ -168,7 +168,7 @@ for (let index = 0; index < years.length; index++) {
 
         return acc;
       },
-      0
+      0,
     );
 
     dividendTimeline.push(timelineMonth);
@@ -193,13 +193,15 @@ for (let index = 0; index < years.length; index++) {
               <>
                 <article>
                   <h2>
-                    {months.get(month.month)} {month.year}
+                    {months.get(month.month)}&nbsp;{month.year}
                   </h2>
                   <h3 style="margin-block: .75rem;">
                     <span style="font-weight: 500;">
                       {formatCurrency(month.totalPayout, "EUR", "de-DE")}
                     </span>
-                    <spam>in {month.dividendsOfMonth.length} Auszahlungen</spam>
+                    <span>
+                      in&nbsp;{month.dividendsOfMonth.length} Auszahlungen
+                    </span>
                   </h3>
                   <div class="stocks">
                     {month.dividendsOfMonth
@@ -221,8 +223,8 @@ for (let index = 0; index < years.length; index++) {
                                   stocks.find(
                                     (iterStock) =>
                                       iterStock.isin ===
-                                      dividend.instrumentInfo?.isin
-                                  )!
+                                      dividend.instrumentInfo?.isin,
+                                  )!,
                                 )}
                                 alt={`Logo ${dividend.instrumentInfo?.name}`}
                                 width="35"
@@ -237,7 +239,7 @@ for (let index = 0; index < years.length; index++) {
                                   {formatCurrency(
                                     dividend.amountPayout,
                                     "EUR",
-                                    "de-DE"
+                                    "de-DE",
                                   )}
                                 </span>
                               </div>
@@ -250,21 +252,21 @@ for (let index = 0; index < years.length; index++) {
                               Ex-Dividende am:
                               <br />
                               {new Date(
-                                dividend.ex_date_iso
+                                dividend.ex_date_iso,
                               ).toLocaleDateString()}
                             </p>
                             <p>
                               Auszahlung am:
                               <br />
                               {new Date(
-                                dividend.payment_date_iso
+                                dividend.payment_date_iso,
                               ).toLocaleDateString()}
                             </p>
                             <p>
                               Anteil:
                               {getPercentage(
                                 dividend.amountPayout,
-                                month.totalPayout
+                                month.totalPayout,
                               )}
                             </p>
                             {dividend.info ? (
@@ -295,7 +297,7 @@ for (let index = 0; index < years.length; index++) {
           return (
             <>
               <h1>
-                {year}
+                {year}{" "}
                 <small>
                   {formatCurrency(
                     dividendTimeline
@@ -306,7 +308,7 @@ for (let index = 0; index < years.length; index++) {
                         return acc;
                       }, 0),
                     "EUR",
-                    "de-DE"
+                    "de-DE",
                   )}
                 </small>
               </h1>
@@ -338,7 +340,9 @@ for (let index = 0; index < years.length; index++) {
     padding: 0.98rem 1rem;
     background-color: hsl(0, 0%, 4%);
     border-radius: 4px;
-    transition: background-color 260ms ease-out, box-shadow 260ms ease-out;
+    transition:
+      background-color 260ms ease-out,
+      box-shadow 260ms ease-out;
 
     &:hover {
       background-color: hsl(0, 0%, 5%);

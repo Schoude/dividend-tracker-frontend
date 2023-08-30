@@ -32,7 +32,9 @@ const { stock } = Astro.props;
   />
 
   <Dividends
-    dividendYield={`${(stock.company_infos.dividendyieldsnapshot * 100).toFixed(2)}%`}
+    dividendYield={`${(stock.company_infos.dividendyieldsnapshot * 100).toFixed(
+      2,
+    )}%`}
     dividends={stock.dividends_stock}
     distribution_frequency={stock.distribution_frequency}
   />
