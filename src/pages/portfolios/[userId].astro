@@ -16,6 +16,22 @@ const { data } = (await (
   </header>
   <main>
     <h1>Deine Portfolios</h1>
-    {data.map((p) => <a href={`/portfolio/${p.id}/detail`}>{p.name}</a>)}
+    <ol>
+      {
+        data.map((p) => (
+          <li transition:name={p.name} transition:animate="initial">
+            <a class="portfolio-name" href={`/portfolio/${p.id}/detail`}>
+              {p.name}
+            </a>
+          </li>
+        ))
+      }
+    </ol>
   </main>
 </Layout>
+
+<style>
+  li {
+    font-size: 1.45rem;
+  }
+</style>

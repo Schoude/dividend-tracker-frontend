@@ -24,7 +24,9 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
     </nav>
   </header>
   <main>
-    <h1><q>{data.name}</q></h1>
+    <h1 transition:name={data.name} transition:animate="initial">
+      <q>{data.name}</q>
+    </h1>
     <section>
       <h2>{totalValue}</h2>
       <div class="amounts">
