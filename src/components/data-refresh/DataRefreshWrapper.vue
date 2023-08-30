@@ -23,6 +23,7 @@ const {
   fundsDividendsRefresh,
   fundsPriceRefresh,
   watchlistSync,
+  exchangeRatesUpdate,
 } = useDataRefresh(props.urlBase);
 
 function onAuthError () {
@@ -76,7 +77,7 @@ function onAuthError () {
     </div>
   </section>
 
-  <section class="container-refresh sync">
+  <section class="container-refresh watchlist-sync">
     <h2>TR-Watchlist</h2>
     <div class="inner">
       <ButtonRefresh
@@ -84,6 +85,18 @@ function onAuthError () {
         @error:auth="onAuthError"
       >
         Watchlist synchronisieren
+      </ButtonRefresh>
+    </div>
+  </section>
+
+  <section class="container-refresh exchange-rates">
+    <h2>Wechselkurse</h2>
+    <div class="inner">
+      <ButtonRefresh
+        :update-function="exchangeRatesUpdate"
+        @error:auth="onAuthError"
+      >
+        Wechselkurse aktualisieren
       </ButtonRefresh>
     </div>
   </section>

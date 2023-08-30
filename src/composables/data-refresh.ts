@@ -55,6 +55,16 @@ export function useDataRefresh(urlBase: string) {
     }
   }
 
+  async function exchangeRatesUpdate(): Promise<Response | void> {
+    console.log('exchangeRatesUpdate called');
+
+    try {
+      return fetch(`${urlBase}/api/refresh/exchange-rates`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return {
     stocksPriceRefresh,
     stocksInfoRefresh,
@@ -62,5 +72,6 @@ export function useDataRefresh(urlBase: string) {
     fundsPriceRefresh,
     fundsDividendsRefresh,
     watchlistSync,
+    exchangeRatesUpdate,
   }
 }
