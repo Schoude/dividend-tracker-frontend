@@ -4,6 +4,7 @@ import Layout from "../../../layouts/Layout.astro";
 import { isInPast, months } from "../../../utils/date";
 import { getPercentage } from "../../../utils/calculation";
 import type {
+  DividendOfMonth,
   DividendsMonthly,
   ExchangeRatesResponse,
   PortfolioDetailResponse,
@@ -58,14 +59,13 @@ const {
 const dividendTimeline: TimelineMonth[] = [];
 const today = new Date();
 const yearNow = today.getUTCFullYear();
-const currentMonth = today.getMonth() + 1;
 
 const years = [yearNow, yearNow + 1];
 
 for (let index = 0; index < years.length; index++) {
   const year = years[index];
 
-  const startingMonth = year === yearNow ? currentMonth : 1;
+  const startingMonth = 1;
 
   for (let i = startingMonth; i <= 12; i++) {
     const timelineMonth: {
@@ -80,7 +80,7 @@ for (let index = 0; index < years.length; index++) {
       totalPayout: 0,
     };
 
-    const dividendsOfMonth = stocks
+    const dividendsOfMonth: DividendsMonthly = stocks
       .map((s) => {
         return s.dividends_stock
           .filter((d) => {
@@ -104,10 +104,11 @@ for (let index = 0; index < years.length; index++) {
 
             return {
               ...d,
+              type: "stock",
               amountPayout: d.amount * ownedAtPayout * SOURCE_TAX * usd_eur,
               instrumentInfo: stockInfo,
               ownedAtPayout,
-            };
+            } as DividendOfMonth;
           });
       })
       .flat();
@@ -148,10 +149,11 @@ for (let index = 0; index < years.length; index++) {
 
               return {
                 ...d,
+                type: "fund",
                 amountPayout: d.amount * ownedAtPayout,
                 instrumentInfo: fundInfo,
                 ownedAtPayout,
-              };
+              } as DividendOfMonth;
             });
         })
         .flat() ?? [];
@@ -191,7 +193,7 @@ for (let index = 0; index < years.length; index++) {
             .filter((month) => month.year === year)
             .map((month) => (
               <>
-                <article>
+                <article id={`payouts-${month.year}-${month.month}`}>
                   <h2>
                     {months.get(month.month)}&nbsp;{month.year}
                   </h2>
@@ -200,15 +202,21 @@ for (let index = 0; index < years.length; index++) {
                       {formatCurrency(month.totalPayout, "EUR", "de-DE")}
                     </span>
                     <span>
-                      in&nbsp;{month.dividendsOfMonth.length} Auszahlungen
+                      in
+                      {
+                        month.dividendsOfMonth.filter(
+                          (dividend) => dividend.amountPayout > 0,
+                        ).length
+                      }{" "}
+                      Auszahlungen
                     </span>
                   </h3>
-                  <div class="stocks">
+                  <div class="dividends">
                     {month.dividendsOfMonth
                       .filter((dividend) => dividend.amountPayout > 0)
                       .map((dividend) => (
                         <div
-                          class="stock"
+                          class="dividend"
                           class:list={[
                             { payed: isInPast(dividend.payment_date_unix) },
                           ]}
@@ -220,11 +228,17 @@ for (let index = 0; index < years.length; index++) {
                             >
                               <img
                                 src={getLogoUrl(
-                                  stocks.find(
-                                    (iterStock) =>
-                                      iterStock.isin ===
-                                      dividend.instrumentInfo?.isin,
-                                  )!,
+                                  dividend.type === "stock"
+                                    ? stocks.find(
+                                        (iterStock) =>
+                                          iterStock.isin ===
+                                          dividend.instrumentInfo?.isin,
+                                      )!
+                                    : funds.find(
+                                        (iterFund) =>
+                                          iterFund.isin ===
+                                          dividend.instrumentInfo?.isin,
+                                      )!,
                                 )}
                                 alt={`Logo ${dividend.instrumentInfo?.name}`}
                                 width="35"
@@ -321,6 +335,18 @@ for (let index = 0; index < years.length; index++) {
   </main>
 </Layout>
 
+<script>
+  document.addEventListener("astro:after-swap", () => {
+    const today = new Date();
+    const yearNow = today.getUTCFullYear();
+    const currentMonth = today.getMonth() + 1;
+    const scrollTarget = document.querySelector(
+      `#payouts-${yearNow}-${currentMonth}`,
+    );
+    scrollTarget?.scrollIntoView({ behavior: "instant", block: "center" });
+  });
+</script>
+
 <style>
   article {
     & + article {
@@ -328,13 +354,13 @@ for (let index = 0; index < years.length; index++) {
     }
   }
 
-  .stocks {
+  .dividends {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
   }
 
-  .stock {
+  .dividend {
     flex-basis: 420px;
     border: 1px solid rgb(53, 53, 53);
     padding: 0.98rem 1rem;

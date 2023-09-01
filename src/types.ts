@@ -56,7 +56,7 @@ export type StocksStatus = StatusStock[];
 
 export type FundsStatus = StatusFund[];
 
-interface DividendOfMonth {
+export interface DividendOfMonth {
   amountPayout: number;
   info: string;
   instrumentInfo: StatusStock | undefined;
@@ -66,6 +66,7 @@ interface DividendOfMonth {
   ex_date_iso: string;
   amount: number;
   ownedAtPayout: number;
+  type: 'stock' | 'fund';
 }
 
 export type DividendsMonthly = DividendOfMonth[];
