@@ -1,9 +1,11 @@
 <script setup lang='ts'>
 import { inject } from 'vue';
 import { keyRefreshing } from '../../utils/provide-keys';
+import type { ExchangeRates, ExchangeRatesResponse } from '../../types';
 
 const emit = defineEmits<{
-  (event: 'error:auth'): void
+  (event: 'error:auth'): void;
+  (event: 'update:exchange-rates', payload: ExchangeRates): void
 }>();
 
 const props = defineProps<{
@@ -30,6 +32,18 @@ async function onUpdateStocksClick() {
         emit('error:auth')
       }
     }
+
+    if (typeof res === 'object') {
+      switch (props.updateFunction.name) {
+        case 'exchangeRatesUpdate': {
+          const data = await res.json() as ExchangeRatesResponse;
+          emit('update:exchange-rates', data.data);
+
+          break;
+        }
+      }
+    }
+
   } catch (error) {
     console.log(error);
   } finally {

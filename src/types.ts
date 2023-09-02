@@ -136,10 +136,12 @@ export interface FundFullInfo {
   sectors: Sector[];
 }
 
+export interface ExchangeRates {
+  usd_eur: number;
+  eur_usd: number;
+  updated_at: string;
+}
+
 export interface ExchangeRatesResponse {
-  data: {
-    usd_eur: number;
-    eur_usd: number;
-    updated_at: string;
-  }
+  data: ExchangeRates;
 }
