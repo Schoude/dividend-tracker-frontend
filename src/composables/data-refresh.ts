@@ -11,7 +11,7 @@ export function useDataRefresh(urlBase: string) {
     console.log('stocksInfoRefresh called');
 
     try {
-      return fetch(`${urlBase}/api`);
+      return fetch(`${urlBase}/api/refresh/stocks/infos`);
     } catch (error) {
       console.log(error);
     }
