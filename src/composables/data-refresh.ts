@@ -39,7 +39,7 @@ export function useDataRefresh(urlBase: string) {
     console.log('fundsDividendsRefresh called');
 
     try {
-      return fetch(`${urlBase}/api`);
+      return fetch(`${urlBase}/api/refresh/funds/dividends`);
     } catch (error) {
       console.log(error);
     }
