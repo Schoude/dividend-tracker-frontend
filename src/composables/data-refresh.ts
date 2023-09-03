@@ -21,7 +21,7 @@ export function useDataRefresh(urlBase: string) {
     console.log('stocksDividendsRefresh called');
 
     try {
-      return fetch(`${urlBase}/api`);
+      return fetch(`${urlBase}/api/refresh/stocks/dividends`);
     } catch (error) {
       console.log(error);
     }

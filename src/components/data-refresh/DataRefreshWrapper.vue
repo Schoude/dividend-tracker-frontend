@@ -119,6 +119,7 @@ function onAuthError () {
       </ButtonRefresh>
     </div>
   </section>
+  <h2>ADD LOADER ANIMATION: stock chart that flies in. green trend line that grows. coins or currency symbols that rain down.</h2>
 </template>
 
 <style scoped>
