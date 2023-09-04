@@ -6,13 +6,15 @@ import {keyRefreshing, keyTRSession} from '../../utils/provide-keys';
 import {useDataRefresh} from '../../composables/data-refresh';
 import type { ExchangeRates, ExchangeRatesResponse } from '../../types';
 import { formatCurrency } from '../../utils/intl';
+import { usePreventReload } from '../../composables/prevent-reload';
 
 const props = defineProps<{
   urlBase: string;
 }>();
 const trSession = ref<null | string>(null);
-const refreshing = ref(false);
 const exchangeRates = ref<ExchangeRates | null>(null);
+
+const {preventPredicate} = usePreventReload();
 
 onBeforeMount(async () => {
   trSession.value = localStorage.getItem('tr_session');
@@ -22,7 +24,7 @@ onBeforeMount(async () => {
 })
 
 provide(keyTRSession, trSession);
-provide(keyRefreshing, refreshing);
+provide(keyRefreshing, preventPredicate);
 
 const {
   stocksPriceRefresh,
@@ -147,3 +149,4 @@ dd {
   font-weight: 200;
 }
 </style>
+../../composables/prevent-reload
