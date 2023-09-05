@@ -1,5 +1,6 @@
 ---
 import FundDetails from "../../../../components/FundDetails.astro";
+import PageNavigation from "../../../../components/PageNavigation.astro";
 import StockDetails from "../../../../components/StockDetails.astro";
 import OrderInstrument from "../../../../components/common/OrderInstrument.astro";
 import Orders from "../../../../components/common/Orders.astro";
@@ -56,11 +57,9 @@ const recommendationsResponse = (await (
 ---
 
 <Layout title={`Neue Order für Portfolio ${portfolioResponse.data.name}`}>
-  <header>
-    <nav>
-      <a href="/portfolios/1">Portofolio-Übersicht</a>
-    </nav>
-  </header>
+  <PageNavigation>
+    <a href="/portfolios/1">Portofolio-Übersicht</a>
+  </PageNavigation>
   <main>
     <h1>
       <a href={`/portfolio/${id}/detail`}

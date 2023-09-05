@@ -1,8 +1,13 @@
 ---
+import PageNavigation from "../components/PageNavigation.astro";
 import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Dividend Tracker">
+  <PageNavigation>
+    <a href="/portfolios/1">Portofolio-Übersicht</a>
+    <a href="/insights">Market Insights</a>
+  </PageNavigation>
   <main>
     <h1>Dividend Tracker</h1>
   </main>

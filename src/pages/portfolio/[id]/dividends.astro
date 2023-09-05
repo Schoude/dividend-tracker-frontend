@@ -11,6 +11,7 @@ import type {
 } from "../../../types";
 import { getLogoUrl } from "../../../utils/logos";
 import { isFulfilled, isRejected } from "../../../utils/type-guards";
+import PageNavigation from "../../../components/PageNavigation.astro";
 
 interface TimelineMonth {
   year: number;
@@ -179,11 +180,9 @@ for (let index = 0; index < years.length; index++) {
 ---
 
 <Layout title={`Dividenden-Übersicht: ${name}`}>
-  <header>
-    <nav>
-      <a href="/portfolios/1">Portofolio-Übersicht</a>
-    </nav>
-  </header>
+  <PageNavigation>
+    <a href="/portfolios/1">Portofolio-Übersicht</a>
+  </PageNavigation>
   <main>
     <h1><a href={`/portfolio/${portfolioId}/detail`}><q>{name}</q></a></h1>
     <section>

@@ -1,4 +1,5 @@
 ---
+import PageNavigation from "../../../components/PageNavigation.astro";
 import InstrumentItem from "../../../components/common/InstrumentItem.astro";
 import Layout from "../../../layouts/Layout.astro";
 import type { PortfolioDetailResponse } from "../../../types";
@@ -18,11 +19,9 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
 ---
 
 <Layout title={`Portfolio Detail: ${data.name}`}>
-  <header>
-    <nav>
-      <a href="/portfolios/1">Portofolio-Übersicht</a>
-    </nav>
-  </header>
+  <PageNavigation>
+    <a href="/portfolios/1">Portofolio-Übersicht</a>
+  </PageNavigation>
   <main>
     <h1 transition:name={data.name} transition:animate="initial">
       <q>{data.name}</q>

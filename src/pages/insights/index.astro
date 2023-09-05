@@ -1,14 +1,31 @@
 ---
+import PageNavigation from "../../components/PageNavigation.astro";
 import Layout from "../../layouts/Layout.astro";
 ---
 
 <Layout title="Marketet Insights | Dividend Tracker">
-  <header>
-    <nav>
-      <a href="/portfolios/1">Portofolio-Übersicht</a>
-    </nav>
-  </header>
+  <PageNavigation>
+    <a href="/portfolios/1">Portofolio-Übersicht</a>
+  </PageNavigation>
   <main>
     <h1>Market Insights</h1>
+    <section>
+      <h2>News</h2>
+      <ul>
+        <li>
+          <a href="/insights/news-sentiment">Sentiment News</a>
+        </li>
+      </ul>
+    </section>
   </main>
 </Layout>
+
+<style>
+  li {
+    & a {
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+</style>
