@@ -12,6 +12,7 @@ const { data } = (await (
   <header>
     <nav>
       <a href="/refresh">Daten aktualisieren</a>
+      <a href="/insights">Marktet Insights</a>
     </nav>
   </header>
   <main>
@@ -31,6 +32,11 @@ const { data } = (await (
 </Layout>
 
 <style>
+  nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+
   li {
     font-size: 1.45rem;
   }
