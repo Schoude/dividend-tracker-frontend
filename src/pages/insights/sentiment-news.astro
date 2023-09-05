@@ -1,0 +1,53 @@
+---
+import PageNavigation from "../../components/PageNavigation.astro";
+import Layout from "../../layouts/Layout.astro";
+
+import { GET } from "../api/alphavantage/sentiment-news";
+
+let response = await GET(Astro);
+
+if (!response.body) {
+  return Astro.redirect("/insights", 307);
+}
+
+const data = await response.json();
+---
+
+<Layout title="Sentiment News | Dividend Tracker">
+  <PageNavigation>
+    <a href="/portfolios/1">Portofolio-Übersicht</a>
+    <a href="/insights">Market Insights</a>
+  </PageNavigation>
+
+  <main>
+    <h1>News Sentiment</h1>
+    <p>{data.greeting}</p>
+    <section class="sentiment-positive">
+      <h2>Positive</h2>
+      {
+        data.articlesBullish.map((article) => (
+          <article>
+            <header>{article.title}</header>
+            <p>{article.overall_sentiment_score}</p>
+          </article>
+        ))
+      }
+    </section>
+
+    <section class="sentiment-negative">
+      <h2>Negative</h2>
+      {
+        data.articlesBearish.map((article) => (
+          <article>
+            <header>{article.title}</header>
+            <p>{article.overall_sentiment_score}</p>
+          </article>
+        ))
+      }
+    </section>
+  </main>
+</Layout>
+
+<script>
+  console.log("adasd");
+</script>

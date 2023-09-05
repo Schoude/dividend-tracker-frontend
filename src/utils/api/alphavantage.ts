@@ -1,0 +1,3 @@
+export const ALPHA_VANTAGE_FUNCTIONS = {
+  NEWS_SENTIMENT: 'NEWS_SENTIMENT'
+} as const;
