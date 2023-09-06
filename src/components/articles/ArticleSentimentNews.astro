@@ -1,0 +1,103 @@
+---
+import {
+  getAlphavantageDate,
+  type ArticleNewsSentiment,
+} from "../../utils/api/alphavantage";
+
+export interface Props {
+  article: ArticleNewsSentiment;
+}
+
+const { article } = Astro.props;
+---
+
+<article class="article-sentiment-news">
+  <header>
+    {
+      article.banner_image ? (
+        <img
+          class="image-article"
+          src={article.banner_image}
+          alt={article.title}
+        />
+      ) : null
+    }
+    <a class="link-article" href={article.url} target="_blank" rel="noopener">
+      <h3>{article.title}</h3>
+    </a>
+  </header>
+
+  <div class="body">
+    <p class="summary">{article.summary}</p>
+    <p class="date">
+      Am {getAlphavantageDate(article.time_published).toLocaleString()}
+    </p>
+    <div class="sentiment-data">
+      <p>{article.overall_sentiment_score}</p>
+      <p>{article.overall_sentiment_label}</p>
+    </div>
+
+    <div class="topics">
+      <h3>Themen</h3>
+      {
+        article.topics.map((topic) => (
+          <div class="topic">
+            <span class="topic-label">{topic.topic}</span>
+            <span class="relevance-score">{topic.relevance_score}</span>
+          </div>
+        ))
+      }
+    </div>
+    <div class="ticker-sentiments">
+      <h3>Ticker Sentiments</h3>
+      {
+        article.ticker_sentiment.map((ticker) => (
+          <div class="ticker">
+            <span class="ticker-label">{ticker.ticker}</span>
+            <span class="relevance-score">{ticker.relevance_score}</span>
+            <span class="sentiment-score">{ticker.ticker_sentiment_score}</span>
+            <span class="sentiment-score-label">
+              {ticker.ticker_sentiment_label}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</article>
+
+<style>
+  article {
+    max-inline-size: 50ch;
+    outline: goldenrod 1px dotted;
+    margin: 0.75rem;
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: 1fr;
+    isolation: isolate;
+
+    .image-article {
+      /* The filter messes with the visibility of the text event though the text is above the image. */
+      z-index: -1;
+      aspect-ratio: 2.5 / 1;
+      object-fit: cover;
+      object-position: center;
+      filter: brightness(0.15) blur(4px);
+      grid-area: 1 / 1;
+    }
+
+    .link-article {
+      grid-area: 1 / 1;
+      padding: 0.5rem;
+      font-size: 1.25rem;
+    }
+  }
+
+  .link-article {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+</style>
