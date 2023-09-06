@@ -80,6 +80,7 @@ const { article } = Astro.props;
 
     .image-article {
       /* The filter messes with the visibility of the text event though the text is above the image. */
+      inline-size: 100%;
       z-index: -1;
       aspect-ratio: 2.5 / 1;
       object-fit: cover;
