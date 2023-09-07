@@ -66,8 +66,6 @@ const data = (await (response as Response).json()) as {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
-      block-size: 90vh;
-      overflow: auto;
     }
   }
 
@@ -85,6 +83,10 @@ const data = (await (response as Response).json()) as {
     }
 
     @media only screen and (min-width: 1440px) {
+      block-size: 90vh;
+      overflow: auto;
+      scrollbar-gutter: stable;
+
       .inner {
         display: grid;
         grid-template-columns: 1fr 1fr;
