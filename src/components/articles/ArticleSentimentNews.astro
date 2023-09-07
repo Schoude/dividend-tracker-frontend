@@ -28,49 +28,76 @@ const { article } = Astro.props;
   </header>
 
   <div class="body">
-    <p class="summary">{article.summary}</p>
-    <p class="date">
-      Am {getAlphavantageDate(article.time_published).toLocaleString()}
-    </p>
-    <div class="sentiment-data">
-      <p>{article.overall_sentiment_score}</p>
-      <p>{article.overall_sentiment_label}</p>
+    <div class="meta-data">
+      <i class="date">
+        Am {getAlphavantageDate(article.time_published).toLocaleString()}
+      </i>
+      <div class="sentiment-data">
+        <span>{article.overall_sentiment_label}</span>
+        <span>{article.overall_sentiment_score}</span>
+      </div>
     </div>
 
-    <div class="topics">
+    <p class="summary">{article.summary}</p>
+
+    <hr />
+
+    <div class="box">
       <h3>Themen</h3>
-      {
-        article.topics.map((topic) => (
-          <div class="topic">
-            <span class="topic-label">{topic.topic}</span>
-            <span class="relevance-score">{topic.relevance_score}</span>
-          </div>
-        ))
-      }
+      <div class="inner">
+        {
+          article.topics.map((topic) => (
+            <div class="topic">
+              <p class="topic-label">{topic.topic}</p>
+              <p class="relevance-score">Relevance: {topic.relevance_score}</p>
+            </div>
+          ))
+        }
+      </div>
     </div>
-    <div class="ticker-sentiments">
+
+    <div class="box">
       <h3>Ticker Sentiments</h3>
-      {
-        article.ticker_sentiment.map((ticker) => (
-          <div class="ticker">
-            <span class="ticker-label">{ticker.ticker}</span>
-            <span class="relevance-score">{ticker.relevance_score}</span>
-            <span class="sentiment-score">{ticker.ticker_sentiment_score}</span>
-            <span class="sentiment-score-label">
-              {ticker.ticker_sentiment_label}
-            </span>
-          </div>
-        ))
-      }
+      <div class="inner">
+        {
+          article.ticker_sentiment.map((ticker) => (
+            <div class="ticker">
+              <a
+                class="sentiment-news-ticker"
+                href={`/sentiment-news-${ticker.ticker}`}
+                target="_blank"
+                rel="noopener"
+              >
+                <p class="ticker-label">{ticker.ticker}</p>
+              </a>
+              <p class="relevance-score">Relevance: {ticker.relevance_score}</p>
+              <p class="sentiment-score">
+                Sentiment: {ticker.ticker_sentiment_score}
+              </p>
+              <p class="sentiment-score-label">
+                {ticker.ticker_sentiment_label}
+              </p>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </div>
 </article>
 
 <style>
   article {
-    max-inline-size: 50ch;
-    outline: goldenrod 1px dotted;
-    margin: 0.75rem;
+    border: 1px solid rgb(53, 53, 53);
+    background-color: hsl(0, 0%, 4%);
+    border-radius: 4px;
+    transition:
+      background-color 260ms ease-out,
+      box-shadow 260ms ease-out;
+
+    &:hover {
+      background-color: hsl(0, 0%, 5%);
+      box-shadow: 0 10px 12px -8px hsl(0, 0%, 4%);
+    }
   }
 
   header {
@@ -82,11 +109,14 @@ const { article } = Astro.props;
       /* The filter messes with the visibility of the text event though the text is above the image. */
       inline-size: 100%;
       z-index: -1;
-      aspect-ratio: 2.5 / 1;
       object-fit: cover;
       object-position: center;
       filter: brightness(0.15) blur(4px);
       grid-area: 1 / 1;
+
+      @media only screen and (min-width: 1440px) {
+        aspect-ratio: 2.5 / 1;
+      }
     }
 
     .link-article {
@@ -96,9 +126,56 @@ const { article } = Astro.props;
     }
   }
 
-  .link-article {
+  .link-article,
+  .sentiment-news-ticker {
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  .body {
+    padding: 0.98rem 1rem;
+  }
+
+  .meta-data {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    margin-block-end: 0.35rem;
+    font-size: 0.9rem;
+  }
+
+  .sentiment-data {
+    justify-content: emd;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .summary {
+    text-align: justify;
+  }
+
+  .box {
+    margin-block-end: 0.5rem;
+
+    .inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.9rem;
+
+      > div {
+        border: 1px hsl(0, 0%, 30%) dotted;
+        padding: 0.1rem 0.2rem;
+      }
+    }
+
+    & + & {
+      margin-block-end: 0;
+    }
+  }
+
+  .sentiment-news-ticker {
+    display: inline-block;
   }
 </style>

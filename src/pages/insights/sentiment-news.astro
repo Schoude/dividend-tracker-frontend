@@ -25,29 +25,79 @@ const data = (await (response as Response).json()) as {
 
   <main>
     <h1>News Sentiment</h1>
-    <section class="sentiment-positive">
-      <h2>Positive</h2>
-      {
-        data.articlesBullish.map((article) => (
-          <ArticleSentimentNews article={article} />
-        ))
-      }
-    </section>
+    <div class="grid">
+      <section class="sentiment-positive">
+        <h2>Positiv</h2>
+        <div class="inner">
+          {
+            data.articlesBullish.map((article) => (
+              <ArticleSentimentNews article={article} />
+            ))
+          }
+        </div>
+      </section>
 
-    <section class="sentiment-negative">
-      <h2>Negative</h2>
-      {
-        data.articlesBearish.map((article) => (
-          <article>
-            <header>{article.title}</header>
-            <p>{article.overall_sentiment_score}</p>
-          </article>
-        ))
-      }
-    </section>
+      <hr />
+
+      <section class="sentiment-negative">
+        <h2>Negativ</h2>
+        <div class="inner">
+          {
+            data.articlesBearish.map((article) => (
+              <ArticleSentimentNews article={article} />
+            ))
+          }
+        </div>
+      </section>
+    </div>
   </main>
 </Layout>
 
-<script>
-  console.log("adasd");
-</script>
+<style>
+  :global(.page-navigation) {
+    position: sticky;
+    inset-block-start: 0;
+    background-color: hsl(0, 0%, 7%);
+    z-index: 2;
+  }
+
+  .grid {
+    @media only screen and (min-width: 1440px) {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      block-size: 90vh;
+      overflow: auto;
+    }
+  }
+
+  section {
+    & h2 {
+      position: sticky;
+      inset-block-start: 1.5rem;
+      background-color: hsl(0, 0%, 7%);
+      z-index: 1;
+      padding-block-end: 0.5rem;
+
+      @media only screen and (min-width: 1440px) {
+        inset-block-start: 0;
+      }
+    }
+
+    @media only screen and (min-width: 1440px) {
+      .inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+    }
+  }
+
+  hr {
+    display: block;
+
+    @media only screen and (min-width: 1440px) {
+      display: none;
+    }
+  }
+</style>
