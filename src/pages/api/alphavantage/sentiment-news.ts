@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro'
-import { ALPHA_VANTAGE_FUNCTIONS, NewsSentimentFeedSchema, type ArticleNewsSentiment } from '../../../utils/api/alphavantage'
-import { ValiError, parse } from 'valibot'
+import { ALPHA_VANTAGE_FUNCTIONS, NewsSentimentFeedSchema } from '../../../utils/api/alphavantage'
+import { type ValiError, parse } from 'valibot'
 
 export const GET: APIRoute = async () => {
   const topics = 'earnings,finance,manufacturing,technology';
