@@ -3,10 +3,11 @@ import { ALPHA_VANTAGE_FUNCTIONS, NewsSentimentFeedSchema, type ArticleNewsSenti
 import { ValiError, parse } from 'valibot'
 
 export const GET: APIRoute = async () => {
-  // const topics = `&topics=${topics}` + 'earnings,mergers_and_acquisitions,financial_markets,economy_fiscal,economy_monetary,economy_macro,energy_transportation,finance,life_sciences,manufacturing,real_estate,retail_wholesale,technology';
-  const sorting = 'RELEVANCE';
-  const limit = '20'
-  const res = await fetch(`${import.meta.env.ALPHA_VANTAGE_API_URL}${ALPHA_VANTAGE_FUNCTIONS.NEWS_SENTIMENT}&sort=${sorting}&limit=${limit}&apikey=${import.meta.env.ALPHA_VANTAGE_API_TOKEN}`)
+  const topics = 'earnings,finance,manufacturing,technology';
+  const topicsQuery = `&topics=${topics}`;
+  const sorting = 'LATEST';
+  const limit = '30'
+  const res = await fetch(`${import.meta.env.ALPHA_VANTAGE_API_URL}${ALPHA_VANTAGE_FUNCTIONS.NEWS_SENTIMENT}&sort=${sorting}&limit=${limit}${topicsQuery}&apikey=${import.meta.env.ALPHA_VANTAGE_API_TOKEN}`)
 
   if (!res.ok) {
     return new Response(null, {
