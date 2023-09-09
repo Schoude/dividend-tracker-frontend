@@ -56,7 +56,9 @@ const recommendationsResponse = (await (
 ).json()) as { data: { stocks: StockFullInfo[]; funds: FundFullInfo[] } };
 ---
 
-<Layout title={`Neue Order für Portfolio ${portfolioResponse.data.name}`}>
+<Layout
+  title={`${detailInstrument?.name} | Neue Order für Portfolio ${portfolioResponse.data.name}`}
+>
   <PageNavigation>
     <a href="/portfolios/1">Portofolio-Übersicht</a>
   </PageNavigation>
@@ -66,7 +68,7 @@ const recommendationsResponse = (await (
         ><q>{portfolioResponse.data.name}</q></a
       >
     </h1>
-    <h2 class="name-instrument" title={detailInstrument?.name}>
+    <h2 class="name-instrument">
       <img
         transition:name={detailInstrument?.isin}
         transition:animate="initial"

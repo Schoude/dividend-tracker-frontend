@@ -12,10 +12,8 @@ const { data } = (await (
   await fetch(`${import.meta.env.VITE_URL_BASE}/api/portfolio/${id}/detail`)
 ).json()) as PortfolioDetailResponse;
 
-const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
-  data.stocksStatus,
-  data.fundsStatus,
-);
+const { totalFundsValue, totalStocksValue, totalValue, totalValueRaw } =
+  getValueOfPortfolio(data.stocksStatus, data.fundsStatus);
 ---
 
 <Layout title={`Portfolio Detail: ${data.name}`}>
@@ -40,48 +38,40 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
       <h2 class="title-investments">Investments:</h2>
 
       <div class="grid">
-        <div class="investments-stocks">
-          <ul>
-            {
-              data.stocksStatus
-                .sort((a, b) => b.currentValue - a.currentValue)
-                .map((stock) => (
-                  <li>
-                    <InstrumentItem
-                      portfolioId={id as string}
-                      instrument={stock}
-                      logoUrl={getLogoUrl(
-                        data.stocks.find(
-                          (iterStock) => iterStock.isin === stock.isin,
-                        )!,
-                      )}
-                    />
-                  </li>
-                ))
-            }
-          </ul>
-        </div>
-        <div class="investments-funds">
-          <ul>
-            {
-              data.fundsStatus
-                .sort((a, b) => b.currentValue - a.currentValue)
-                .map((fund) => (
-                  <li>
-                    <InstrumentItem
-                      portfolioId={id as string}
-                      instrument={fund}
-                      logoUrl={getLogoUrl(
-                        data.funds.find(
-                          (iterFund) => iterFund.isin === fund.isin,
-                        )!,
-                      )}
-                    />
-                  </li>
-                ))
-            }
-          </ul>
-        </div>
+        <ul class="investments-stocks">
+          {
+            data.stocksStatus
+              .sort((a, b) => b.currentValue - a.currentValue)
+              .map((stock) => (
+                <InstrumentItem
+                  portfolioId={id as string}
+                  instrument={stock}
+                  logoUrl={getLogoUrl(
+                    data.stocks.find(
+                      (iterStock) => iterStock.isin === stock.isin,
+                    )!,
+                  )}
+                  totalPercentage={(stock.currentValue / totalValueRaw) * 100}
+                />
+              ))
+          }
+        </ul>
+        <ul class="investments-funds">
+          {
+            data.fundsStatus
+              .sort((a, b) => b.currentValue - a.currentValue)
+              .map((fund) => (
+                <InstrumentItem
+                  portfolioId={id as string}
+                  instrument={fund}
+                  logoUrl={getLogoUrl(
+                    data.funds.find((iterFund) => iterFund.isin === fund.isin)!,
+                  )}
+                  totalPercentage={(fund.currentValue / totalValueRaw) * 100}
+                />
+              ))
+          }
+        </ul>
       </div>
     </section>
   </main>
@@ -115,6 +105,15 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
     }
   }
 
+  .investments-stocks {
+    display: grid;
+    gap: 1rem;
+
+    @media screen and (min-width: 1440px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
   .title-investments {
     margin-bottom: 0.5rem;
   }
@@ -123,9 +122,5 @@ const { totalFundsValue, totalStocksValue, totalValue } = getValueOfPortfolio(
     list-style: none;
     margin: 0;
     padding: 0;
-  }
-
-  li + li {
-    margin-block-start: 1rem;
   }
 </style>

@@ -29,6 +29,7 @@ export function getValueOfPortfolio(
     totalStocksValue: formatCurrency(totalStocksValue, "EUR", "de-DE"),
     totalFundsValue: formatCurrency(totalFundsValue, "EUR", "de-DE"),
     totalValue: formatCurrency(totalValue, "EUR", "de-DE"),
+    totalValueRaw: totalValue,
   };
 }
 

@@ -6,13 +6,14 @@ export interface Props {
   portfolioId: string;
   instrument: StatusStock | StatusFund;
   logoUrl: string;
+  totalPercentage: number;
 }
 
-const { portfolioId, instrument, logoUrl } = Astro.props;
+const { portfolioId, instrument, logoUrl, totalPercentage } = Astro.props;
 ---
 
-<div class="investment">
-  <p class="investment-name">
+<li class="instrument-item">
+  <div>
     <a
       class="investment-name"
       href={`/portfolio/${portfolioId}/order/${instrument.isin}`}
@@ -29,27 +30,37 @@ const { portfolioId, instrument, logoUrl } = Astro.props;
       />
       {instrument.name}
     </a>
-    <div
-      class="details"
-      class:list={Number(instrument.percentChange) < 0 ? "loss" : "gain"}
-    >
-      <p>
-        {formatCurrency(instrument.currentPrice, "EUR", "de-DE")}&nbsp;
-        {instrument.percentChange}%
-      </p>
-      <p>{formatCurrency(instrument.currentValue, "EUR", "de-DE")}</p>
-    </div>
+  </div>
+  <p class="percent-total">
+    Anteil am Portfolio: {totalPercentage.toFixed(2)} %
   </p>
-</div>
+  <div
+    class="details"
+    class:list={Number(instrument.percentChange) < 0 ? "loss" : "gain"}
+  >
+    <p>
+      {formatCurrency(instrument.currentPrice, "EUR", "de-DE")}&nbsp;
+      {instrument.percentChange} %
+    </p>
+    <p>{formatCurrency(instrument.currentValue, "EUR", "de-DE")}</p>
+  </div>
+</li>
 
 <style>
+  .instrument-item {
+    display: grid;
+  }
+
   .investment-name {
-    display: inline-block;
     font-size: 1.2rem;
     font-weight: 400;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+  }
+
+  .percent-total {
+    margin-block-end: 0.45rem;
   }
 
   .details {
