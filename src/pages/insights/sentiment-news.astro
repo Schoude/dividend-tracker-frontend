@@ -4,8 +4,9 @@ import Layout from "../../layouts/Layout.astro";
 import type { ArticleNewsSentiment } from "../../utils/api/alphavantage";
 import ArticleSentimentNews from "../../components/articles/ArticleSentimentNews.astro";
 import { GET } from "../api/alphavantage/sentiment-news";
+import type { APIContext } from "astro";
 
-let response = await GET(Astro);
+const response = await GET(Astro as unknown as APIContext);
 
 if (!response.body) {
   return Astro.redirect("/insights", 307);
