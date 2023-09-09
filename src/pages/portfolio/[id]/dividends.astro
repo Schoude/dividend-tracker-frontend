@@ -335,14 +335,25 @@ for (let index = 0; index < years.length; index++) {
 </Layout>
 
 <script>
-  document.addEventListener("astro:after-swap", () => {
+  function getScrollTarget() {
     const today = new Date();
     const yearNow = today.getUTCFullYear();
     const currentMonth = today.getMonth() + 1;
     const scrollTarget = document.querySelector(
       `#payouts-${yearNow}-${currentMonth}`,
     );
+
+    return scrollTarget;
+  }
+
+  function scrollToCurrentMonth() {
+    const scrollTarget = getScrollTarget();
     scrollTarget?.scrollIntoView({ behavior: "instant", block: "center" });
+  }
+
+  document.addEventListener("astro:after-swap", () => scrollToCurrentMonth());
+  document.addEventListener("astro:page-load", () => scrollToCurrentMonth(), {
+    once: true,
   });
 </script>
 
