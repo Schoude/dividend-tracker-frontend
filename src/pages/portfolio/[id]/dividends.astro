@@ -378,11 +378,13 @@ for (let index = 0; index < years.length; index++) {
     border-radius: 4px;
     transition:
       background-color 260ms ease-out,
-      box-shadow 260ms ease-out;
+      box-shadow 260ms ease-out,
+      translate 260ms ease-out;
 
     &:hover {
       background-color: hsl(0, 0%, 5%);
-      box-shadow: 0 10px 12px -8px hsl(0, 0%, 4%);
+      box-shadow: 0 16px 12px -8px hsl(0, 0%, 3%);
+      translate: 0 -4px;
     }
 
     &.payed {
