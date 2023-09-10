@@ -1,5 +1,6 @@
 import { object, type Output, string, number, array, enumType, union, nullType } from 'valibot';
 
+// START Sentiment News
 const ArticleNewsSentimentSchema = object({
   title: string(),
   url: string(),
@@ -25,9 +26,27 @@ const ArticleNewsSentimentSchema = object({
 export const NewsSentimentFeedSchema = array(ArticleNewsSentimentSchema);
 
 export type ArticleNewsSentiment = Output<typeof ArticleNewsSentimentSchema>;
+// END Sentiment News
+
+// START Top Gainers / Losers
+const GainerOrLoser = object({
+  ticker: string(),
+  price: string(),
+  change_amount: string(),
+  change_percentage: string(),
+  volume: string(),
+})
+
+export const TopGainersLosersSchema = object({
+  top_gainers: array(GainerOrLoser),
+  top_losers: array(GainerOrLoser),
+})
+// END Top Gainers / Losers
 
 export const ALPHA_VANTAGE_FUNCTIONS = {
-  NEWS_SENTIMENT: 'NEWS_SENTIMENT'
+  NEWS_SENTIMENT: 'NEWS_SENTIMENT',
+  TOP_GAINERS_LOSERS: 'TOP_GAINERS_LOSERS',
+  OVERVIEW: 'OVERVIEW',
 } as const;
 
 export function getAlphavantageDate(date: string) {

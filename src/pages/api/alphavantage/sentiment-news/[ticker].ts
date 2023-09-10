@@ -20,9 +20,8 @@ export const GET: APIRoute = async (context: APIContext) => {
   const json = await res.json();
 
   if ("Note" in json || "Information" in json) {
-    return new Response(null, {
+    return new Response(`API Quote Reached: ${json['Note'] ?? json['Information']}`, {
       status: 500,
-      statusText: `API Quote Reached: ${json['Note']}`
     });
   }
 
