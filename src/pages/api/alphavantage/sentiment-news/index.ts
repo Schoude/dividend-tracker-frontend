@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import { ALPHA_VANTAGE_FUNCTIONS, NewsSentimentFeedSchema } from '../../../../utils/api/alphavantage'
+import { ALPHA_VANTAGE_FUNCTIONS, NewsSentimentFeedSchema, createAlphavantageDate } from '../../../../utils/api/alphavantage'
 import { type ValiError, parse } from 'valibot'
 
 export const GET: APIRoute = async () => {
@@ -7,7 +7,8 @@ export const GET: APIRoute = async () => {
   const topicsQuery = `&topics=${topics}`;
   const sorting = 'LATEST';
   const limit = '30'
-  const res = await fetch(`${import.meta.env.ALPHA_VANTAGE_API_URL}${ALPHA_VANTAGE_FUNCTIONS.NEWS_SENTIMENT}&sort=${sorting}&limit=${limit}${topicsQuery}&apikey=${import.meta.env.ALPHA_VANTAGE_API_TOKEN}`)
+  const timeFrom = `time_from=${createAlphavantageDate(1)}`;
+  const res = await fetch(`${import.meta.env.ALPHA_VANTAGE_API_URL}${ALPHA_VANTAGE_FUNCTIONS.NEWS_SENTIMENT}&sort=${sorting}&limit=${limit}${topicsQuery}&${timeFrom}&apikey=${import.meta.env.ALPHA_VANTAGE_API_TOKEN}`)
 
   if (!res.ok) {
     return new Response(null, {

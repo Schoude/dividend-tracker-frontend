@@ -39,3 +39,20 @@ export function getAlphavantageDate(date: string) {
   parts.push('.540Z');
   return new Date(parts.join(''));
 }
+
+export function createAlphavantageDate(monthsAgo: number): string {
+  const currentDate = new Date();
+
+  // Calculate the date in the past
+  currentDate.setMonth(currentDate.getMonth() - monthsAgo);
+
+  // Extract year, month, and day
+  const year = currentDate.getFullYear();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed, so we add 1
+  const day = currentDate.getDate().toString().padStart(2, '0');
+
+  // Format the date as 'YYYYMMDDTHHMM'
+  const formattedDate = `${year}${month}${day}T0000`;
+
+  return formattedDate;
+}
