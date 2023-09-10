@@ -93,6 +93,10 @@ const { article } = Astro.props;
 </article>
 
 <style>
+  .article-sentiment-news {
+    container-type: inline-size;
+  }
+
   article {
     border: 1px solid rgb(53, 53, 53);
     background-color: hsl(0, 0%, 4%);
@@ -120,12 +124,13 @@ const { article } = Astro.props;
       object-position: center;
       filter: brightness(0.15) blur(4px);
       grid-area: 1 / 1;
+    }
 
-      @media only screen and (min-width: 1440px) {
+    .image-article {
+      @container (inline-size > 350px) {
         aspect-ratio: 2.5 / 1;
       }
     }
-
     .link-article {
       grid-area: 1 / 1;
       padding: 0.5rem;
