@@ -1,0 +1,242 @@
+---
+import type { OverviewTickerSchema } from "../../utils/api/alphavantage";
+
+export interface Props {
+  tickerData: OverviewTickerSchema;
+}
+
+const { tickerData } = Astro.props;
+---
+
+<section class="overview-ticker-data">
+  <h2>Stammdaten</h2>
+  <dl>
+    <div class="data-point">
+      <dt>Symbol</dt>
+      <dd>{tickerData.Symbol}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Beschreibung</dt>
+      <dd title={tickerData.Description}>{tickerData.Description}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Börse</dt>
+      <dd>{tickerData.Exchange}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Währung</dt>
+      <dd>{tickerData.Currency}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Land</dt>
+      <dd>{tickerData.Country}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Sektor</dt>
+      <dd>{tickerData.Sector}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Branche</dt>
+      <dd>{tickerData.Industry}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Adresse</dt>
+      <dd>{tickerData.Address}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Geschäftsjahresende</dt>
+      <dd>{tickerData.FiscalYearEnd}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Letztes Quartal</dt>
+      <dd>{tickerData.LatestQuarter}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Marktkapitalisierung</dt>
+      <dd>{tickerData.MarketCapitalization}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>EBITDA</dt>
+      <dd>{tickerData.EBITDA}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Kurs-Gewinn-Verhältnis</dt>
+      <dd>{tickerData.PERatio}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Kurs-Gewinn-Wachstumsverhältnis</dt>
+      <dd>{tickerData.PEGRatio}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Buchwert</dt>
+      <dd>{tickerData.BookValue}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Dividendenzahlungsdatum</dt>
+      <dd>{tickerData.DividendDate}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Ex-Dividenden-Datum</dt>
+      <dd>{tickerData.ExDividendDate}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Dividende pro Aktie</dt>
+      <dd>{tickerData.DividendPerShare}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Dividendenrendite</dt>
+      <dd>{tickerData.DividendYield}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Gewinn pro Aktie</dt>
+      <dd>{tickerData.EPS}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Umsatz pro Aktie (TTM)</dt>
+      <dd>{tickerData.RevenuePerShareTTM}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Gewinnmarge</dt>
+      <dd>{tickerData.ProfitMargin}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Betriebsgewinnmarge (TTM)</dt>
+      <dd>{tickerData.OperatingMarginTTM}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Eigenkapitalrendite (TTM)</dt>
+      <dd>{tickerData.ReturnOnAssetsTTM}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Gesamtkapitalrendite (TTM)</dt>
+      <dd>{tickerData.ReturnOnEquityTTM}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Umsatz (TTM)</dt>
+      <dd>{tickerData.RevenueTTM}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Bruttogewinn (TTM)</dt>
+      <dd>{tickerData.GrossProfitTTM}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Verwässertes EPS (TTM)</dt>
+      <dd>{tickerData.DilutedEPSTTM}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Quartalsgewinnwachstum im Jahresvergleich</dt>
+      <dd>{tickerData.QuarterlyEarningsGrowthYOY}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Quartalsumsatzwachstum im Jahresvergleich</dt>
+      <dd>{tickerData.QuarterlyRevenueGrowthYOY}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Kursziel (Analystenprognose)</dt>
+      <dd>{tickerData.AnalystTargetPrice}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Kurs-Gewinn-Verhältnis auf Basis der letzten zwölf Monate</dt>
+      <dd>{tickerData.TrailingPE}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Prognostiziertes Kurs-Gewinn-Verhältnis</dt>
+      <dd>{tickerData.ForwardPE}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Kurs-Umsatz-Verhältnis (TTM)</dt>
+      <dd>{tickerData.PriceToSalesRatioTTM}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Kurs-Buchwert-Verhältnis</dt>
+      <dd>{tickerData.PriceToBookRatio}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Enterprise-Wert zu Umsatz-Verhältnis</dt>
+      <dd>{tickerData.EVToRevenue}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Enterprise-Wert zu EBITDA-Verhältnis</dt>
+      <dd>{tickerData.EVToEBITDA}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>Beta</dt>
+      <dd>{tickerData.Beta}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>52-Wochen-Hoch</dt>
+      <dd>{tickerData["52WeekHigh"]}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>52-Wochen-Tief</dt>
+      <dd>{tickerData["52WeekLow"]}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>50-Tage-Durchschnitt</dt>
+      <dd>{tickerData["50DayMovingAverage"]}</dd>
+    </div>
+
+    <div class="data-point">
+      <dt>200-Tage-Durchschnitt</dt>
+      <dd>{tickerData["200DayMovingAverage"]}</dd>
+    </div>
+  </dl>
+</section>
+
+<style>
+  dl {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 0;
+  }
+
+  dd {
+    margin-inline-start: 1rem;
+    font-weight: 200;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

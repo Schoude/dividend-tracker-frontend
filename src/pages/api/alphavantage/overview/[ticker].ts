@@ -22,7 +22,7 @@ export const GET: APIRoute = async (context: APIContext) => {
   }
 
   try {
-    const parsed = parse(OverviewTickerSchema, json.feed);
+    const parsed = parse(OverviewTickerSchema, json);
 
     return new Response(JSON.stringify(parsed), {
       status: 200,
@@ -31,8 +31,9 @@ export const GET: APIRoute = async (context: APIContext) => {
       },
     });
   } catch (error) {
-    console.log((error as ValiError).name);
     console.log((error as ValiError).message);
+    console.log((error as ValiError).cause);
+    console.log(JSON.stringify((error as ValiError).message));
 
     return new Response(null, {
       status: 500,

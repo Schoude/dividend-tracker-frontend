@@ -43,10 +43,7 @@ export const TopGainersLosersSchema = object({
 })
 // END Top Gainers / Losers
 
-NewsSentimentFeedSchema
-
 // START Overview Ticker
-
 export const OverviewTickerSchema = object({
   Symbol: string(),
   Name: string(),
@@ -89,7 +86,6 @@ export const OverviewTickerSchema = object({
   '52WeekLow': string(),
   '50DayMovingAverage': string(),
   '200DayMovingAverage': string(),
-  SharesOutstanding: string(),
   DividendDate: string(),
   ExDividendDate: string(),
 });

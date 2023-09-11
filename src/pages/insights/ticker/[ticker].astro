@@ -1,20 +1,38 @@
 ---
 import type { APIContext } from "astro";
 import { GET } from "../../api/alphavantage/sentiment-news/[ticker].ts";
+import { GET as GETTICKER } from "../../api/alphavantage/overview/[ticker].ts";
 import Layout from "../../../layouts/Layout.astro";
-import type { ArticleNewsSentiment } from "../../../utils/api/alphavantage";
+import type {
+  ArticleNewsSentiment,
+  OverviewTickerSchema,
+} from "../../../utils/api/alphavantage";
 import ArticleSentimentNews from "../../../components/articles/ArticleSentimentNews.astro";
 import PageNavigation from "../../../components/PageNavigation.astro";
+import OverviewTickerData from "../../../components/ticker/OverviewTickerData.astro";
 
 const { ticker } = Astro.params;
 
-const response = await GET(Astro as unknown as APIContext);
+const responseSentimentNews = (await GET(
+  Astro as unknown as APIContext,
+)) as Response;
+const responseTickerOverview = (await GETTICKER(
+  Astro as unknown as APIContext,
+)) as Response;
 
-if (!response.body) {
+if (
+  responseSentimentNews.status === 500 ||
+  responseTickerOverview.status === 500
+) {
   return Astro.redirect("/insights", 307);
 }
 
-const data = (await (response as Response).json()) as ArticleNewsSentiment[];
+const dataSentimentNews = (await (
+  responseSentimentNews as Response
+).json()) as ArticleNewsSentiment[];
+const dataTickerOverview = (await (
+  responseTickerOverview as Response
+).json()) as OverviewTickerSchema;
 ---
 
 <Layout title={`${ticker} Ticker Infos | Dividend Tracker`}>
@@ -22,20 +40,29 @@ const data = (await (response as Response).json()) as ArticleNewsSentiment[];
     <a href="/portfolios/1">Portofolio-Übersicht</a>
     <a href="/insights">Market Insights</a>
   </PageNavigation>
+  <h1>Insights für {dataTickerOverview.Name}</h1>
   <main>
-    <h1>Insights für Ticker: {ticker}</h1>
+    <OverviewTickerData tickerData={dataTickerOverview} />
     <section class="sentiment-news">
       <h2>Sentiment News</h2>
       <div class="inner">
-        {data.map((article) => <ArticleSentimentNews article={article} />)}
+        {
+          dataSentimentNews.map((article) => (
+            <ArticleSentimentNews article={article} />
+          ))
+        }
       </div>
     </section>
   </main>
 </Layout>
 
 <style>
-  .sentiment-news {
-    & h2 {
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+
+    & :global(h2) {
       position: sticky;
       inset-block-start: 1.5rem;
       background-color: hsl(0, 0%, 7%);
@@ -46,12 +73,10 @@ const data = (await (response as Response).json()) as ArticleNewsSentiment[];
         inset-block-start: 0;
       }
     }
+  }
 
+  .sentiment-news {
     @media only screen and (min-width: 1440px) {
-      block-size: 90vh;
-      overflow: auto;
-      scrollbar-gutter: stable;
-
       .inner {
         display: grid;
         grid-template-columns: 1fr 1fr;

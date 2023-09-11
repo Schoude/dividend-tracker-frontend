@@ -6,9 +6,9 @@ import ArticleSentimentNews from "../../components/articles/ArticleSentimentNews
 import { GET } from "../api/alphavantage/sentiment-news";
 import type { APIContext } from "astro";
 
-const response = await GET(Astro as unknown as APIContext);
+const response = (await GET(Astro as unknown as APIContext)) as Response;
 
-if (!response.body) {
+if (response.status === 500) {
   return Astro.redirect("/insights", 307);
 }
 
