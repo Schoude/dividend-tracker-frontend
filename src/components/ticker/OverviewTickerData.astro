@@ -1,5 +1,6 @@
 ---
 import type { OverviewTickerSchema } from "../../utils/api/alphavantage";
+import { formatCurrency } from "../../utils/intl";
 
 export interface Props {
   tickerData: OverviewTickerSchema;
@@ -63,12 +64,21 @@ const { tickerData } = Astro.props;
 
     <div class="data-point">
       <dt>Marktkapitalisierung</dt>
-      <dd>{tickerData.MarketCapitalization}</dd>
+      <dd>
+        {
+          formatCurrency(
+            +tickerData.MarketCapitalization,
+            "USD",
+            "en-US",
+            "compact",
+          )
+        }
+      </dd>
     </div>
 
     <div class="data-point">
       <dt>EBITDA</dt>
-      <dd>{tickerData.EBITDA}</dd>
+      <dd>{formatCurrency(+tickerData.EBITDA, "USD", "en-US", "compact")}</dd>
     </div>
 
     <div class="data-point">
@@ -138,12 +148,16 @@ const { tickerData } = Astro.props;
 
     <div class="data-point">
       <dt>Umsatz (TTM)</dt>
-      <dd>{tickerData.RevenueTTM}</dd>
+      <dd>
+        {formatCurrency(+tickerData.RevenueTTM, "USD", "en-US", "compact")}
+      </dd>
     </div>
 
     <div class="data-point">
       <dt>Bruttogewinn (TTM)</dt>
-      <dd>{tickerData.GrossProfitTTM}</dd>
+      <dd>
+        {formatCurrency(+tickerData.GrossProfitTTM, "USD", "en-US", "compact")}
+      </dd>
     </div>
 
     <div class="data-point">
@@ -235,7 +249,7 @@ const { tickerData } = Astro.props;
     margin-inline-start: 1rem;
     font-weight: 200;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
