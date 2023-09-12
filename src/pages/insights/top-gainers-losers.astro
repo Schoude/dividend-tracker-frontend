@@ -1,0 +1,32 @@
+---
+import PageNavigation from "../../components/PageNavigation.astro";
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Top Gainers / Losers | Dividend Tracker">
+  <PageNavigation>
+    <a href="/portfolios/1">Portofolio-Übersicht</a>
+    <a href="/insights">Market Insights</a>
+  </PageNavigation>
+
+  <main>
+    <h1>Top Gainers / Losers</h1>
+    <div class="grid"></div>
+  </main>
+</Layout>
+
+<style>
+  :global(.page-navigation) {
+    position: sticky;
+    inset-block-start: 0;
+    background-color: hsl(0, 0%, 7%);
+  }
+
+  .grid {
+    @media only screen and (min-width: 1440px) {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+  }
+</style>
