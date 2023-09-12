@@ -57,10 +57,22 @@ const dataTickerOverview = (await (
 </Layout>
 
 <style>
+  :global(.page-navigation) {
+    position: sticky;
+    inset-block-start: 0;
+    background-color: hsl(0, 0%, 7%);
+    z-index: 2;
+  }
+
   main {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+
+    @media only screen and (min-width: 1440px) {
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
 
     & :global(h2) {
       position: sticky;
@@ -68,10 +80,6 @@ const dataTickerOverview = (await (
       background-color: hsl(0, 0%, 7%);
       z-index: 1;
       padding-block-end: 0.5rem;
-
-      @media only screen and (min-width: 1440px) {
-        inset-block-start: 0;
-      }
     }
   }
 

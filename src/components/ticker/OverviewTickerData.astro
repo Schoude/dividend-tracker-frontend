@@ -240,9 +240,13 @@ const { tickerData } = Astro.props;
 <style>
   dl {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
     margin: 0;
+
+    @media only screen and (min-width: 1440px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   dd {
