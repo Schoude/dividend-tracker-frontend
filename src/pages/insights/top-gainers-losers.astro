@@ -1,6 +1,18 @@
 ---
+import type { APIContext } from "astro";
 import PageNavigation from "../../components/PageNavigation.astro";
 import Layout from "../../layouts/Layout.astro";
+import { GET } from "../api/alphavantage/top-gainers-losers";
+import type { TopGainersLosers } from "../../utils/api/alphavantage";
+import { formatCurrency } from "../../utils/intl";
+
+const response = (await GET(Astro as unknown as APIContext)) as Response;
+
+if (response.status === 500) {
+  return Astro.redirect("/insights", 307);
+}
+
+const data = (await (response as Response).json()) as TopGainersLosers;
 ---
 
 <Layout title="Top Gainers / Losers | Dividend Tracker">
@@ -11,7 +23,44 @@ import Layout from "../../layouts/Layout.astro";
 
   <main>
     <h1>Top Gainers / Losers</h1>
-    <div class="grid"></div>
+    <div class="grid">
+      <section class="gainers">
+        <h2>Gainers</h2>
+        <ul class="inner">
+          {
+            data.top_gainers.map((gainer) => (
+              <li>
+                <article class="gainer-or-loser">
+                  <a
+                    class="ticker"
+                    href={`/insights/ticker/${gainer.ticker}`}
+                    target="_blank"
+                  >
+                    {gainer.ticker}
+                  </a>
+                  <dl>
+                    <dt>Preis:</dt>
+                    <dt>{formatCurrency(+gainer.price, "USD", "en-US")}</dt>
+                    <dt>Preisänderung:</dt>
+                    <dt>{gainer.change_amount}</dt>
+                    <dt>Preisänderung in %:</dt>
+                    <dt>{gainer.change_percentage}</dt>
+                    <dt>Volumen:</dt>
+                    <dt>{gainer.volume}</dt>
+                  </dl>
+                </article>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+      <section class="losers">
+        <h2>Losers</h2>
+        <ul class="inner">
+          {data.top_losers.map((loser) => <li>{loser.ticker}</li>)}
+        </ul>
+      </section>
+    </div>
   </main>
 </Layout>
 
@@ -28,5 +77,52 @@ import Layout from "../../layouts/Layout.astro";
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
     }
+  }
+
+  .inner {
+    margin: 0;
+    margin-block: 1rem;
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .gainer-or-loser {
+    border: 1px solid rgb(53, 53, 53);
+    padding: 0.98rem 1rem;
+    background-color: hsl(0, 0%, 4%);
+    border-radius: 4px;
+    transition:
+      background-color 260ms ease-out,
+      box-shadow 260ms ease-out,
+      translate 260ms ease-out;
+
+    &:hover {
+      background-color: hsl(0, 0%, 5%);
+      box-shadow: 0 16px 12px -8px hsl(0, 0%, 3%);
+      translate: 0 -4px;
+    }
+  }
+
+  .ticker {
+    font-size: 1.25rem;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.75rem;
+    margin: 0;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 200;
   }
 </style>

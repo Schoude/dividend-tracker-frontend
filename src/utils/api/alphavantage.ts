@@ -41,6 +41,8 @@ export const TopGainersLosersSchema = object({
   top_gainers: array(GainerOrLoser),
   top_losers: array(GainerOrLoser),
 })
+
+export type TopGainersLosers = Output<typeof TopGainersLosersSchema>;
 // END Top Gainers / Losers
 
 // START Overview Ticker
