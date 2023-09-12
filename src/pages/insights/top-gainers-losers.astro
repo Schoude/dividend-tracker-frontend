@@ -57,7 +57,31 @@ const data = (await (response as Response).json()) as TopGainersLosers;
       <section class="losers">
         <h2>Losers</h2>
         <ul class="inner">
-          {data.top_losers.map((loser) => <li>{loser.ticker}</li>)}
+          {
+            data.top_losers.map((loser) => (
+              <li>
+                <article class="gainer-or-loser">
+                  <a
+                    class="ticker"
+                    href={`/insights/ticker/${loser.ticker}`}
+                    target="_blank"
+                  >
+                    {loser.ticker}
+                  </a>
+                  <dl>
+                    <dt>Preis:</dt>
+                    <dt>{formatCurrency(+loser.price, "USD", "en-US")}</dt>
+                    <dt>Preisänderung:</dt>
+                    <dt>{loser.change_amount}</dt>
+                    <dt>Preisänderung in %:</dt>
+                    <dt>{loser.change_percentage}</dt>
+                    <dt>Volumen:</dt>
+                    <dt>{loser.volume}</dt>
+                  </dl>
+                </article>
+              </li>
+            ))
+          }
         </ul>
       </section>
     </div>
@@ -77,6 +101,14 @@ const data = (await (response as Response).json()) as TopGainersLosers;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
     }
+  }
+
+  h2 {
+    position: sticky;
+    inset-block-start: 1.5rem;
+    background-color: hsl(0, 0%, 7%);
+    z-index: 1;
+    padding-block-end: 0.5rem;
   }
 
   .inner {
