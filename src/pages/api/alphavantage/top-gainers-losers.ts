@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { ALPHA_VANTAGE_FUNCTIONS, TopGainersLosersSchema } from '../../../utils/api/alphavantage';
-import { ValiError, parse } from 'valibot';
+import { type ValiError, parse } from 'valibot';
 
 export const GET: APIRoute = async () => {
   const url = `${import.meta.env.ALPHA_VANTAGE_API_URL}${ALPHA_VANTAGE_FUNCTIONS.TOP_GAINERS_LOSERS}&apikey=${import.meta.env.ALPHA_VANTAGE_API_TOKEN}`;

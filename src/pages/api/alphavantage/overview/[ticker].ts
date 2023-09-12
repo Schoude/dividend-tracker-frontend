@@ -1,6 +1,6 @@
 import type { APIContext, APIRoute } from 'astro';
 import { ALPHA_VANTAGE_FUNCTIONS, OverviewTickerSchema } from '../../../../utils/api/alphavantage';
-import { ValiError, parse } from 'valibot';
+import { type ValiError, parse } from 'valibot';
 
 export const GET: APIRoute = async (context: APIContext) => {
   const url = `${import.meta.env.ALPHA_VANTAGE_API_URL}${ALPHA_VANTAGE_FUNCTIONS.OVERVIEW}&symbol=${context.params.ticker}&apikey=${import.meta.env.ALPHA_VANTAGE_API_TOKEN}`;
