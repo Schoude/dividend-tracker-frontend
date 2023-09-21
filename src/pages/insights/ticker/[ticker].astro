@@ -52,7 +52,26 @@ const dataTickerNews = (await (
   <main>
     <div class="left">
       <OverviewTickerData tickerData={dataTickerOverview} />
-      <div>{JSON.stringify(dataTickerNews)}</div>
+      <div class="ticker-news-articles">
+        {
+          dataTickerNews.map((article) => (
+            <div class="news-article">
+              <div class="headling">
+                <a href={article.url} target="_blank">
+                  {article.headline}
+                </a>
+              </div>
+              <div class="meta-info">
+                <div class="posting-time">
+                  {new Date(article.datetime).toLocaleDateString()}
+                </div>
+                <div class="source">{article.source}</div>
+              </div>
+              <div class="summary">{article.summary}</div>
+            </div>
+          ))
+        }
+      </div>
     </div>
     <section class="sentiment-news">
       <h2>Sentiment News</h2>
