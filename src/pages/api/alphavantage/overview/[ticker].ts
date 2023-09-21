@@ -4,7 +4,7 @@ import { type ValiError, parse } from 'valibot';
 
 export const GET: APIRoute = async (context: APIContext) => {
   const url = `${import.meta.env.ALPHA_VANTAGE_API_URL}${ALPHA_VANTAGE_FUNCTIONS.OVERVIEW}&symbol=${context.params.ticker}&apikey=${import.meta.env.ALPHA_VANTAGE_API_TOKEN}`;
-  const res = await fetch(url)
+  const res = await fetch(url);
 
   if (!res.ok) {
     return new Response(null, {
@@ -27,7 +27,7 @@ export const GET: APIRoute = async (context: APIContext) => {
     return new Response(JSON.stringify(parsed), {
       status: 200,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
     });
   } catch (error) {
