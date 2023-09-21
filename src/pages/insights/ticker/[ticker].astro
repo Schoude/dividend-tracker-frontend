@@ -2,6 +2,7 @@
 import type { APIContext } from "astro";
 import { GET } from "../../api/alphavantage/sentiment-news/[ticker].ts";
 import { GET as GETTICKER } from "../../api/alphavantage/overview/[ticker].ts";
+import { GET as GETTICKERNEWS } from "../../api/finnhub/[ticker]/news";
 import Layout from "../../../layouts/Layout.astro";
 import type {
   ArticleNewsSentiment,
@@ -10,6 +11,7 @@ import type {
 import ArticleSentimentNews from "../../../components/articles/ArticleSentimentNews.astro";
 import PageNavigation from "../../../components/PageNavigation.astro";
 import OverviewTickerData from "../../../components/ticker/OverviewTickerData.astro";
+import type { CompanyNewsArticles } from "../../../utils/api/finnhub";
 
 const { ticker } = Astro.params;
 
@@ -17,6 +19,9 @@ const responseSentimentNews = (await GET(
   Astro as unknown as APIContext,
 )) as Response;
 const responseTickerOverview = (await GETTICKER(
+  Astro as unknown as APIContext,
+)) as Response;
+const responseTickerNews = (await GETTICKERNEWS(
   Astro as unknown as APIContext,
 )) as Response;
 
@@ -33,6 +38,9 @@ const dataSentimentNews = (await (
 const dataTickerOverview = (await (
   responseTickerOverview as Response
 ).json()) as OverviewTickerSchema;
+const dataTickerNews = (await (
+  responseTickerNews as Response
+).json()) as CompanyNewsArticles;
 ---
 
 <Layout title={`${ticker} Ticker Infos | Dividend Tracker`}>
@@ -42,7 +50,10 @@ const dataTickerOverview = (await (
   </PageNavigation>
   <h1>Insights für {dataTickerOverview.Name}</h1>
   <main>
-    <OverviewTickerData tickerData={dataTickerOverview} />
+    <div class="left">
+      <OverviewTickerData tickerData={dataTickerOverview} />
+      <div>{JSON.stringify(dataTickerNews)}</div>
+    </div>
     <section class="sentiment-news">
       <h2>Sentiment News</h2>
       <div class="inner">

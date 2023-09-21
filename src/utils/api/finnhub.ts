@@ -1,3 +1,19 @@
+import { number, object, string, type Output, array } from 'valibot';
+
+export const CompanyNewsArticlesSchema = array(object({
+  category: string(),
+  datetime: number(),
+  headline: string(),
+  id: number(),
+  image: string(),
+  related: string(),
+  source: string(),
+  summary: string(),
+  url: string(),
+}));
+
+export type CompanyNewsArticles = Output<typeof CompanyNewsArticlesSchema>;
+
 export function getFinnhubDate(monthsAgo = 0) {
   const today = new Date();
   today.setMonth(today.getMonth() - monthsAgo);
