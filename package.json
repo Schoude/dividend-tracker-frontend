@@ -6,7 +6,8 @@
     "astro": "astro",
     "dev": "astro dev --host",
     "build": "astro build",
-    "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs"
+    "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs",
+    "deno-deploy": "npm run build && deployctl deploy --project=div-trak --no-static --include=./dist ./dist/server/entry.mjs"
   },
   "dependencies": {
     "@astrojs/deno": "^5.0.1",
