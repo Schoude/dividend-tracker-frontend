@@ -6,6 +6,12 @@ on:
 
 env:
   NODE_VERSION: '20.5.1'
+  VITE_URL_BASE: ${{secrets.VITE_URL_BASE}}
+  VITE_ASSETS_URL_BASE: ${{secrets.VITE_ASSETS_URL_BASE}}
+  ALPHA_VANTAGE_API_TOKEN: ${{secrets.ALPHA_VANTAGE_API_TOKEN}}
+  ALPHA_VANTAGE_API_URL: ${{secrets.ALPHA_VANTAGE_API_URL}}
+  FINNHUB_API_TOKEN: ${{secrets.FINNHUB_API_TOKEN}}
+  FINNHUB_API_URL: ${{secrets.FINNHUB_API_URL}}
 
 jobs:
   deploy:
@@ -14,7 +20,6 @@ jobs:
     permissions:
       id-token: write # Needed for auth with Deno Deploy
       contents: read # Needed to clone the repository
-
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
@@ -29,13 +34,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{env.NODE_VERSION}}
-        env:
-          VITE_URL_BASE: ${{secrets.VITE_URL_BASE}}
-          VITE_ASSETS_URL_BASE: ${{secrets.VITE_ASSETS_URL_BASE}}
-          ALPHA_VANTAGE_API_TOKEN: ${{secrets.ALPHA_VANTAGE_API_TOKEN}}
-          ALPHA_VANTAGE_API_URL: ${{secrets.ALPHA_VANTAGE_API_URL}}
-          FINNHUB_API_TOKEN: ${{secrets.FINNHUB_API_TOKEN}}
-          FINNHUB_API_URL: ${{secrets.FINNHUB_API_URL}}
       - run: npm run build
 
       - name: Upload to Deno Deploy
